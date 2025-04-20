@@ -6,7 +6,13 @@ import Card from "@/components/students/card";
 import { toast } from "react-toastify";
 import { StudentFormInputEdit } from "@/utils/validators/studentInput";
 
-export default function EditStudent() {
+export default function EditStudent({
+    params
+}: {
+    params: { id: string }
+}) {
+    const { id } = params;
+
     const handleSubmit = async (formData: StudentFormInputEdit, id = "") => {
         try {
             await axiosInstance.patch(`/students/${id}`, formData);
@@ -45,7 +51,7 @@ export default function EditStudent() {
                 <div className="my-8">
                     <Card
                         handleSubmitForm={handleSubmit}
-                        studentId="cm9pgf7pz0009uxycp5x6ic7t"
+                        studentId={id}
                         isEdit={true}
                     />
                 </div>

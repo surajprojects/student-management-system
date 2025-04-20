@@ -1,34 +1,20 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Institute, Gender, Category } from "@/db/generated/prisma";
 import { StudentFormInput } from "@/utils/validators/studentInput";
-
-interface initialDataType {
-    fullName: string,
-    fatherName: string,
-    motherName: string,
-    dob: string,
-    class: string,
-    institute: string,
-    instituteName: string,
-    gender: string,
-    category: string,
-    mobileNo: string,
-    guardianMobileNo: string,
-    email: string,
-    address: string,
-    course: string,
-    enrolledOn: string,
-    totalFees: string,
-    batch: string,
-    session: string,
-    remarks: string,
-};
+import axiosInstance from "@/utils/axios";
 
 export default function Card({
     handleSubmitForm,
-    initialData = {
+    studentId,
+    isEdit = false
+}: {
+    handleSubmitForm: (data: StudentFormInput, id?: string) => void,
+    studentId?: string,
+    isEdit?: boolean
+}) {
+    const initialData = {
         fullName: "",
         fatherName: "",
         motherName: "",
@@ -48,16 +34,43 @@ export default function Card({
         batch: "",
         session: "",
         remarks: "",
-    },
-    studentId,
-    isEdit = false
-}: {
-    handleSubmitForm: (data: StudentFormInput, id?: string) => void,
-    initialData?: initialDataType,
-    studentId?: string,
-    isEdit?: boolean
-}) {
+    };
     const [formData, setFormData] = useState(initialData);
+
+    if (isEdit) {
+        useEffect(() => {
+            const getData = async () => {
+                const result = await axiosInstance.get(`/students/${studentId}`);
+                console.log(result)
+                const data = result.data.studentData;
+                setFormData((prevData) => {
+                    return {
+                        ...prevData,
+                        fullName: data.fullName ? data.fullName : "",
+                        fatherName: data.fatherName ? data.fatherName : "",
+                        motherName: data.motherName ? data.motherName : "",
+                        dob: data.dob ? data.dob.split("T")[0] : "",
+                        class: data.class,
+                        institute: data.institute ? data.institute : "",
+                        instituteName: data.instituteName ? data.instituteName : "",
+                        gender: data.gender ? data.gender : "",
+                        category: data.category ? data.category : "",
+                        mobileNo: data.mobileNo ? data.mobileNo : "",
+                        guardianMobileNo: data.guardianMobileNo ? data.guardianMobileNo : "",
+                        email: data.email ? data.email : "",
+                        address: data.address ? data.address : "",
+                        course: data.course ? data.course : "",
+                        enrolledOn: data.enrolledOn ? data.enrolledOn.split("T")[0] : "",
+                        totalFees: data.totalFees ? String(data.totalFees) : "",
+                        batch: data.batch ? data.batch : "",
+                        session: data.session ? data.session : "",
+                        remarks: data.remarks ? data.remarks : "",
+                    }
+                });
+            };
+            getData();
+        }, []);
+    };
 
     const handleChange = (evt: any) => {
         const fieldName = evt.target.name;
@@ -90,27 +103,7 @@ export default function Card({
                         gender: formData.gender as Gender,
                         category: formData.category as Category,
                     }, studentId);
-                    setFormData({
-                        fullName: "",
-                        fatherName: "",
-                        motherName: "",
-                        dob: "",
-                        class: "",
-                        institute: "",
-                        instituteName: "",
-                        gender: "",
-                        category: "",
-                        mobileNo: "",
-                        guardianMobileNo: "",
-                        email: "",
-                        address: "",
-                        course: "",
-                        enrolledOn: "",
-                        totalFees: "",
-                        batch: "",
-                        session: "",
-                        remarks: "",
-                    })
+                    setFormData(initialData)
                 }
                 }
                 className="grid grid-cols-1 xl:grid-cols-4 gap-2 xl:gap-6"
