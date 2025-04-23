@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Institute, Gender, Category } from "@/db/generated/prisma";
 import { StudentFormInput } from "@/utils/validators/studentInput";
 import axiosInstance from "@/utils/axios";
+import { errorHandle } from "@/utils/errors/errorHandle";
+import CardField from "./cardField";
 
 export default function Card({
     handleSubmitForm,
@@ -36,43 +38,66 @@ export default function Card({
         remarks: "",
     };
     const [formData, setFormData] = useState(initialData);
+    const [courseList, setCourseList] = useState([]);
+    const [batchList, setBatchList] = useState([]);
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const courseData = await axiosInstance.get("/course");
+                setCourseList(courseData.data.allCourses);
+                const batchData = await axiosInstance.get("/batch");
+                setBatchList(batchData.data.allBatches);
+            }
+            catch (error) {
+                errorHandle(error);
+            }
+        };
+        getData();
+    }, []);
 
     if (isEdit) {
         useEffect(() => {
             const getData = async () => {
-                const result = await axiosInstance.get(`/students/${studentId}`);
-                console.log(result)
-                const data = result.data.studentData;
-                setFormData((prevData) => {
-                    return {
-                        ...prevData,
-                        fullName: data.fullName ? data.fullName : "",
-                        fatherName: data.fatherName ? data.fatherName : "",
-                        motherName: data.motherName ? data.motherName : "",
-                        dob: data.dob ? data.dob.split("T")[0] : "",
-                        class: data.class,
-                        institute: data.institute ? data.institute : "",
-                        instituteName: data.instituteName ? data.instituteName : "",
-                        gender: data.gender ? data.gender : "",
-                        category: data.category ? data.category : "",
-                        mobileNo: data.mobileNo ? data.mobileNo : "",
-                        guardianMobileNo: data.guardianMobileNo ? data.guardianMobileNo : "",
-                        email: data.email ? data.email : "",
-                        address: data.address ? data.address : "",
-                        course: data.course ? data.course : "",
-                        enrolledOn: data.enrolledOn ? data.enrolledOn.split("T")[0] : "",
-                        totalFees: data.totalFees ? String(data.totalFees) : "",
-                        batch: data.batch ? data.batch : "",
-                        session: data.session ? data.session : "",
-                        remarks: data.remarks ? data.remarks : "",
-                    }
-                });
+                try {
+                    const result = await axiosInstance.get(`/students/${studentId}`);
+                    console.log(result)
+                    const data = result.data.studentData;
+                    setFormData((prevData) => {
+                        return {
+                            ...prevData,
+                            fullName: data.fullName ? data.fullName : "",
+                            fatherName: data.fatherName ? data.fatherName : "",
+                            motherName: data.motherName ? data.motherName : "",
+                            dob: data.dob ? data.dob.split("T")[0] : "",
+                            class: data.class,
+                            institute: data.institute ? data.institute : "",
+                            instituteName: data.instituteName ? data.instituteName : "",
+                            gender: data.gender ? data.gender : "",
+                            category: data.category ? data.category : "",
+                            mobileNo: data.mobileNo ? data.mobileNo : "",
+                            guardianMobileNo: data.guardianMobileNo ? data.guardianMobileNo : "",
+                            email: data.email ? data.email : "",
+                            address: data.address ? data.address : "",
+                            course: data.course ? data.course : "",
+                            enrolledOn: data.enrolledOn ? data.enrolledOn.split("T")[0] : "",
+                            totalFees: data.totalFees ? String(data.totalFees) : "",
+                            batch: data.batch ? data.batch : "",
+                            session: data.session ? data.session : "",
+                            remarks: data.remarks ? data.remarks : "",
+                        }
+                    });
+                }
+                catch (error) {
+                    errorHandle(error);
+                }
             };
             getData();
         }, []);
     };
 
     const handleChange = (evt: any) => {
+        console.log("Inside handle change")
         const fieldName = evt.target.name;
         const changedValue = evt.target.value;
         setFormData((prevData) => {
@@ -109,47 +134,32 @@ export default function Card({
                 className="grid grid-cols-1 xl:grid-cols-4 gap-2 xl:gap-6"
             >
                 {/* Full Name */}
-                <div>
-                    <label htmlFor="fullName">Full Name{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="fullName"
-                        id="fullName"
-                        placeholder="Enter the full name"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        className="mx-2 border-2 rounded-md px-1"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="fullName"
+                    title="Full Name"
+                    textHolder="Enter the full name"
+                    fieldValue={formData.fullName}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Father's Name */}
-                <div>
-                    <label htmlFor="fatherName">Father's Name{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="fatherName"
-                        id="fatherName"
-                        value={formData.fatherName}
-                        onChange={handleChange}
-                        placeholder="Enter the father's name"
-                        className="mx-2 border-2 rounded-md px-1"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="fatherName"
+                    title="Father's Name"
+                    textHolder="Enter the father's name"
+                    fieldValue={formData.fatherName}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Mother's Name */}
-                <div>
-                    <label htmlFor="motherName">Mother's Name{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="motherName"
-                        id="motherName"
-                        value={formData.motherName}
-                        onChange={handleChange}
-                        placeholder="Enter the mother's name"
-                        className="mx-2 border-2 rounded-md px-1"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="motherName"
+                    title="Mother's Name"
+                    textHolder="Enter the mother's name"
+                    fieldValue={formData.motherName}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Date of Birth */}
                 <div>
                     <label htmlFor="dob">Date of Birth{!isEdit && "*"}</label>
@@ -164,19 +174,14 @@ export default function Card({
                     />
                 </div>
                 {/* Class */}
-                <div>
-                    <label htmlFor="class">Class{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="class"
-                        id="class"
-                        value={formData.class}
-                        onChange={handleChange}
-                        placeholder="Studying in class"
-                        className="mx-2 border-2 rounded-md px-1"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="class"
+                    title="Class"
+                    textHolder="Studying in class"
+                    fieldValue={formData.class}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Institute */}
                 <div>
                     <label htmlFor="institute">Institute{!isEdit && "*"}</label>
@@ -195,18 +200,14 @@ export default function Card({
                     </select>
                 </div>
                 {/* Institute Name */}
-                <div>
-                    <label htmlFor="instituteName">Institute Name</label>
-                    <input
-                        type="text"
-                        name="instituteName"
-                        id="instituteName"
-                        value={formData.instituteName}
-                        onChange={handleChange}
-                        placeholder="Enter the institute name"
-                        className="mx-2 border-2 rounded-md px-1"
-                    />
-                </div>
+                <CardField
+                    id="instituteName"
+                    title="Institute Name"
+                    textHolder="Enter the institute name"
+                    fieldValue={formData.instituteName}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Gender */}
                 <div>
                     <label htmlFor="gender">Gender{!isEdit && "*"}</label>
@@ -242,62 +243,42 @@ export default function Card({
                     </select>
                 </div>
                 {/* Mobile Number */}
-                <div>
-                    <label htmlFor="mobileNo">Mobile No.{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="mobileNo"
-                        id="mobileNo"
-                        maxLength={10}
-                        value={formData.mobileNo}
-                        onChange={handleChange}
-                        placeholder="00000 00000"
-                        className="mx-2 border-2 rounded-md px-1 w-32"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="mobileNo"
+                    title="Mobile No."
+                    textHolder="00000 00000"
+                    fieldValue={formData.mobileNo}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Guardian Mobile Number */}
-                <div>
-                    <label htmlFor="guardianMobileNo">Guardian Mobile No.{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="guardianMobileNo"
-                        id="guardianMobileNo"
-                        maxLength={10}
-                        value={formData.guardianMobileNo}
-                        onChange={handleChange}
-                        placeholder="00000 00000"
-                        className="mx-2 border-2 rounded-md px-1 w-32"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="guardianMobileNo"
+                    title="Guardian Mobile No."
+                    textHolder="00000 00000"
+                    fieldValue={formData.guardianMobileNo}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Email */}
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="Enter email address"
-                        className="mx-2 border-2 rounded-md px-1"
-                    />
-                </div>
+                <CardField
+                    fieldType="email"
+                    id="email"
+                    title="Mother's Name"
+                    textHolder="Enter email address"
+                    fieldValue={formData.email}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Address */}
-                <div>
-                    <label htmlFor="address">Address{!isEdit && "*"}</label>
-                    <input
-                        type="text"
-                        name="address"
-                        id="address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        placeholder="Enter the address"
-                        className="mx-2 border-2 rounded-md px-1"
-                        required={!isEdit}
-                    />
-                </div>
+                <CardField
+                    id="address"
+                    title="Address"
+                    textHolder="Enter the address"
+                    fieldValue={formData.address}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Course */}
                 <div>
                     <label htmlFor="course">Course{!isEdit && "*"}</label>
@@ -310,15 +291,9 @@ export default function Card({
                         required={!isEdit}
                     >
                         <option value="" disabled>Select Course</option>
-                        <option value="DCA">DCA</option>
-                        <option value="PGDCA">PGDCA</option>
-                        <option value="TALLY">TALLY</option>
-                        <option value="TYPING">TYPING</option>
-                        <option value="ENGLISHTYPING">ENGLISH TYPING</option>
-                        <option value="HINDITYPING">HINDI TYPING</option>
-                        <option value="BASIC01">BASIC 1 MONTH</option>
-                        <option value="BASIC03">BASIC 3 MONTHS</option>
-                        <option value="BASIC06">BASIC 6 MONTHS</option>
+                        {courseList.map((course: any, idx) => {
+                            return <option key={idx} value={course.code}>{course.name}</option>;
+                        })}
                     </select>
                 </div>
                 {/* Enrolled On */}
@@ -361,44 +336,29 @@ export default function Card({
                         required={!isEdit}
                     >
                         <option value="" disabled>Select Batch</option>
-                        <option value="B01T7AM">BASIC 01 TIME 7AM</option>
-                        <option value="B02T8AM">BASIC 02 TIME 8AM</option>
-                        <option value="B03T9AM">BASIC 03 TIME 9AM</option>
-                        <option value="B04T10AM">BASIC 04 TIME 10AM</option>
-                        <option value="B05T11AM">BASIC 05 TIME 11AM</option>
-                        <option value="B06T12PM">BASIC 06 TIME 12PM</option>
-                        <option value="B07T3PM">BASIC 07 TIME 3PM</option>
-                        <option value="B08T4PM">BASIC 08 TIME 4PM</option>
-                        <option value="B09T5PM">BASIC 09 TIME 5PM</option>
-                        <option value="B10T6PM">BASIC 10 TIME 6PM</option>
+                        {batchList.map((batch: any, idx) => {
+                            return <option key={idx} value={batch.code}>{batch.name}</option>;
+                        })}
                     </select>
                 </div>
                 {/* Session */}
-                <div>
-                    <label htmlFor="session">Session</label>
-                    <input
-                        type="text"
-                        name="session"
-                        id="session"
-                        value={formData.session}
-                        onChange={handleChange}
-                        placeholder="JUNE 2025"
-                        className="mx-2 border-2 rounded-md px-1"
-                    />
-                </div>
+                <CardField
+                    id="session"
+                    title="Session"
+                    textHolder="JUNE 2025"
+                    fieldValue={formData.session}
+                    onChangeFunc={handleChange}
+                    isRequired={!isEdit}
+                />
                 {/* Remarks */}
-                <div>
-                    <label htmlFor="remarks">Remarks</label>
-                    <input
-                        type="text"
-                        name="remarks"
-                        id="remarks"
-                        value={formData.remarks}
-                        onChange={handleChange}
-                        placeholder="Enter remarks"
-                        className="mx-2 border-2 rounded-md px-1"
-                    />
-                </div>
+                <CardField
+                    id="remarks"
+                    title="Remarks"
+                    textHolder="Enter remarks"
+                    fieldValue={formData.remarks}
+                    onChangeFunc={handleChange}
+                    isRequired={false}
+                />
                 {/* Buttons */}
                 <div className="col-span-4 my-5">
                     <button type="submit" className="bg-green-500 text-white px-2 py-1 rounded-md shadow hover:cursor-pointer">Submit</button>

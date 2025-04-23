@@ -37,16 +37,19 @@ enum Institute {
 }
 
 model Course {
-  id       String    @id @default(cuid())
-  name     String    @unique
-  duration Int
-  fees     Int
-  students Student[]
+  id            String    @id @default(cuid())
+  code          String    @unique
+  name          String
+  instituteName String
+  duration      Int
+  fees          Int
+  students      Student[]
 }
 
 model Batch {
   id       String    @id @default(cuid())
   code     String    @unique
+  name     String
   time     String
   students Student[]
 }
@@ -72,7 +75,7 @@ model Student {
   batchId          String
   enrolledOn       DateTime
   totalFees        Int
-  session          String?
+  session          String
   photo            String?
   remarks          String?
 

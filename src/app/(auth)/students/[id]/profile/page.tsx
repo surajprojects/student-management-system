@@ -69,7 +69,7 @@ export default function ProfileStudent({
                     <p className="text-3xl font-medium">{studentData.fullName}</p>
                 </div>
                 <div className="my-8">
-                    <ul className="text-lg grid grid-cols-3 gap-6">
+                    <ul className="text-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <li>
                             <span className="font-medium">Father's Name:</span>
                             <span className="mx-2">{studentData.fatherName === "" ? "N/A" : studentData.fatherName}</span>

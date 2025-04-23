@@ -3,7 +3,13 @@ import { studentFormInput, StudentFormInput } from "@/utils/validators/studentIn
 
 export async function GET() {
     try {
-        return Response.json({ message: "Successfully found all students!!!" }, { status: 200 });
+        const allStudents = await prisma.student.findMany({});
+
+        if (!allStudents) {
+            return Response.json({ message: "Students not found!!!" }, { status: 404 });
+        }
+
+        return Response.json({ message: "Successfully found all students!!!", allStudents }, { status: 200 });
     }
     catch (error) {
         console.log(error)
@@ -22,7 +28,7 @@ export async function POST(req: Request) {
 
         const courseId = await prisma.course.findUnique({
             where: {
-                name: parsedInput.data.course
+                code: parsedInput.data.course,
             }
         });
 
@@ -31,16 +37,14 @@ export async function POST(req: Request) {
         }
 
         const batchId = await prisma.batch.findUnique({
-            where: {
-                code: parsedInput.data.batch
-            }
+            where: { code: parsedInput.data.batch }
         });
 
         if (!batchId) {
             return Response.json({ message: "Invalid batch selected!!!" }, { status: 404 });
         }
 
-        await prisma.student.create({
+        const studentData = await prisma.student.create({
             data: {
                 fullName: parsedInput.data.fullName,
                 fatherName: parsedInput.data.fatherName,
@@ -57,14 +61,14 @@ export async function POST(req: Request) {
                 courseId: courseId.id,
                 institute: parsedInput.data.institute,
                 totalFees: Number(parsedInput.data.totalFees),
+                session: parsedInput.data.session,
                 ...(parsedInput.data.email && { email: parsedInput.data.email }),
                 ...(parsedInput.data.instituteName && { instituteName: parsedInput.data.instituteName }),
-                ...(parsedInput.data.session && { session: parsedInput.data.session }),
                 ...(parsedInput.data.remarks && { remarks: parsedInput.data.remarks }),
             }
         });
 
-        return Response.json({ message: "Successfully created the student!!!" }, { status: 201 });
+        return Response.json({ message: "Successfully created the student!!!", studentData }, { status: 201 });
     }
     catch (error) {
         console.log(error)

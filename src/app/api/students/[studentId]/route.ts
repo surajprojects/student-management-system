@@ -2,12 +2,12 @@ import prisma from "@/db";
 import { PrismaClientKnownRequestError } from "@/db/generated/prisma/runtime/library";
 import { studentFormInputEdit, StudentFormInputEdit } from "@/utils/validators/studentInput";
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: { studentId: string } }) {
     try {
-        const { id } = params;
+        const { studentId } = params;
 
         const studentData = await prisma.student.findUnique({
-            where: { id },
+            where: { id: studentId },
             include: { batch: true, course: true, }
         });
 
@@ -23,9 +23,9 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     }
 };
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: { studentId: string } }) {
     try {
-        const { id } = params;
+        const { studentId } = params;
         const data: StudentFormInputEdit = await req.json();
         const parsedInput = studentFormInputEdit.safeParse(data);
 
@@ -33,7 +33,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
             return Response.json({ message: "Invalid input!!!", details: parsedInput.error.errors }, { status: 400 });
         }
 
-        const foundStudent = await prisma.student.findUnique({ where: { id } });
+        const foundStudent = await prisma.student.findUnique({ where: { id: studentId } });
 
         if (!foundStudent) {
             return Response.json({ message: "Student not found!!!" }, { status: 404 });
@@ -45,7 +45,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         if (parsedInput.data.course) {
             courseId = await prisma.course.findUnique({
                 where: {
-                    name: parsedInput.data.course
+                    code: parsedInput.data.course
                 }
             });
 
@@ -67,7 +67,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         }
 
         const studentData = await prisma.student.update({
-            where: { id },
+            where: { id: studentId },
             data: {
                 ...(parsedInput.data.fullName && { fullName: parsedInput.data.fullName }),
                 ...(parsedInput.data.fatherName && { fatherName: parsedInput.data.fatherName }),

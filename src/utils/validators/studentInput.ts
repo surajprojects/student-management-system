@@ -19,7 +19,7 @@ export const studentFormInput = z.object({
     enrolledOn: z.string().date(),
     totalFees: z.string().regex(/^\d+$/, "Total fees must be a number string. Example - '500'"),
     batch: z.string(),
-    session: z.string().optional(),
+    session: z.string(),
     remarks: z.string().optional(),
 }).strict();
 
