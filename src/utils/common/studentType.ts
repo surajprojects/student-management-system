@@ -1,0 +1,41 @@
+export interface StudentData {
+    id: string,
+    fullName: string,
+    fatherName: string,
+    motherName: string,
+    dob: string,
+    gender: string,
+    category: string,
+    class: string,
+    institute: string,
+    instituteName?: string,
+    mobileNo: string,
+    guardianMobileNo: string,
+    email: string,
+    address: string,
+    courseId: string,
+    batchId: string,
+    enrolledOn: string,
+    totalFees: number,
+    session: string,
+    photo?: string,
+    remarks?: string,
+    createdAt: string,
+    updatedAt: string,
+    batch: {
+        id: string,
+        code: string,
+        name: string,
+        time: string,
+    },
+    course: {
+        id: string,
+        code: string,
+        name: string,
+        instituteName: string,
+        duration: string,
+        fees: string,
+    }
+};
+
+export type StudentsList = StudentData[];

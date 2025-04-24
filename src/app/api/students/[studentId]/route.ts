@@ -99,12 +99,12 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
     }
 };
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: { studentId: string } }) {
     try {
-        const { id } = params;
+        const { studentId } = params;
 
         await prisma.student.delete({
-            where: { id }
+            where: { id: studentId }
         });
 
         return Response.json({ message: "Successfully deleted the student!!!" }, { status: 200 });

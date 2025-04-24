@@ -3,7 +3,7 @@ import { studentFormInput, StudentFormInput } from "@/utils/validators/studentIn
 
 export async function GET() {
     try {
-        const allStudents = await prisma.student.findMany({});
+        const allStudents = await prisma.student.findMany({ include: { course: true, batch: true } });
 
         if (!allStudents) {
             return Response.json({ message: "Students not found!!!" }, { status: 404 });
@@ -65,7 +65,8 @@ export async function POST(req: Request) {
                 ...(parsedInput.data.email && { email: parsedInput.data.email }),
                 ...(parsedInput.data.instituteName && { instituteName: parsedInput.data.instituteName }),
                 ...(parsedInput.data.remarks && { remarks: parsedInput.data.remarks }),
-            }
+            },
+            include: { batch: true, course: true }
         });
 
         return Response.json({ message: "Successfully created the student!!!", studentData }, { status: 201 });

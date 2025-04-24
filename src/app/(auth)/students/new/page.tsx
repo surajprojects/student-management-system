@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
 import Card from "@/components/students/card";
 import { toast } from "react-toastify";
@@ -7,12 +8,16 @@ import { StudentFormInput } from "@/utils/validators/studentInput";
 import { errorHandle } from "@/utils/errors/errorHandle";
 
 export default function NewStudent() {
+    const router = useRouter();
     const handleSubmit = async (formData: StudentFormInput) => {
         try {
-            await axiosInstance.post('/students', formData);
+            const result = await axiosInstance.post('/students', formData);
             toast.success('Student created successfully!');
+            router.push(`/students/${result.data.studentData.id}/profile`);
+            return true;
         } catch (error) {
             errorHandle(error);
+            return false;
         }
     };
     return (

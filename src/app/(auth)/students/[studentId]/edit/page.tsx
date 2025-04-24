@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
 import Card from "@/components/students/card";
 import { toast } from "react-toastify";
@@ -9,16 +10,20 @@ import { errorHandle } from "@/utils/errors/errorHandle";
 export default function EditStudent({
     params
 }: {
-    params: { id: string }
+    params: { studentId: string }
 }) {
-    const { id } = params;
+    const router = useRouter();
+    const { studentId } = params;
 
-    const handleSubmit = async (formData: StudentFormInputEdit, id = "") => {
+    const handleSubmit = async (formData: StudentFormInputEdit, studentId = "") => {
         try {
-            await axiosInstance.patch(`/students/${id}`, formData);
+            const result = await axiosInstance.patch(`/students/${studentId}`, formData);
             toast.success('Successfully edited student details!');
+            router.push(`/students/${result.data.studentData.id}/profile`);
+            return true;
         } catch (error) {
             errorHandle(error);
+            return false;
         }
     };
     return (
@@ -30,7 +35,7 @@ export default function EditStudent({
                 <div className="my-8">
                     <Card
                         handleSubmitForm={handleSubmit}
-                        studentId={id}
+                        studentId={studentId}
                         isEdit={true}
                     />
                 </div>

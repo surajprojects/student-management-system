@@ -26,14 +26,14 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <RootWrapper>
-        <html lang="en" className={`${poppins.variable} font-poppins`}>
-          <body className="flex flex-col min-h-screen">
+      <html lang="en" className={`${poppins.variable} font-poppins`}>
+        <body className="flex flex-col min-h-screen">
+          <RootWrapper>
             {children}
-            <ToastContainer theme="light" position="top-center" />
-          </body>
-        </html>
-      </RootWrapper>
+          </RootWrapper>
+          <ToastContainer theme="light" position="top-center" />
+        </body>
+      </html>
     </>
   );
 };
