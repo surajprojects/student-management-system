@@ -8,7 +8,7 @@ export async function GET(_req: Request, { params }: { params: { studentId: stri
 
         const studentData = await prisma.student.findUnique({
             where: { id: studentId },
-            include: { batch: true, course: true, }
+            include: { batch: true, course: true, payments: true, documents: true }
         });
 
         if (!studentData) {

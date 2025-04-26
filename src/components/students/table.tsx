@@ -1,6 +1,7 @@
 import TableField from "./tableField";
 import ActionBtns from "./actionBtns";
 import { StudentsList } from "@/utils/common/studentType";
+import { formatDate } from "@/utils/dateAndTime";
 
 export default function Table({ studentsData }: { studentsData: StudentsList }) {
     return (
@@ -74,7 +75,7 @@ export default function Table({ studentsData }: { studentsData: StudentsList }) 
                                         {student.session}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {student.enrolledOn.split("T")[0]}
+                                        {formatDate(student.enrolledOn.split("T")[0])}
                                     </td>
                                     <td className="px-6 py-4">
                                         <ActionBtns studentId={student.id} />

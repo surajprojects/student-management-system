@@ -1,3 +1,7 @@
+import { BatchData } from "./batchType";
+import { CourseData } from "./courseType";
+import { PaymentsList } from "./paymentType";
+
 export interface StudentData {
     id: string,
     fullName: string,
@@ -22,20 +26,9 @@ export interface StudentData {
     remarks?: string,
     createdAt: string,
     updatedAt: string,
-    batch: {
-        id: string,
-        code: string,
-        name: string,
-        time: string,
-    },
-    course: {
-        id: string,
-        code: string,
-        name: string,
-        instituteName: string,
-        duration: string,
-        fees: string,
-    }
+    batch: BatchData,
+    course: CourseData,
+    payments: PaymentsList,
 };
 
 export type StudentsList = StudentData[];

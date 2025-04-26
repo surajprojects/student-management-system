@@ -95,11 +95,12 @@ enum PaymentMode {
 
 model Payment {
   id        String      @id @default(cuid())
-  student   Student     @relation(fields: [studentId], references: [id])
+  student   Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId String
   amount    Int
   method    PaymentMode
   date      DateTime
+  createdAt DateTime    @default(now())
 }
 
 enum DocumentType {
@@ -114,7 +115,7 @@ enum DocumentType {
 
 model StudentDocument {
   id             String       @id @default(cuid())
-  student        Student      @relation(fields: [studentId], references: [id])
+  student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId      String
   documentType   DocumentType
   documentName   String?

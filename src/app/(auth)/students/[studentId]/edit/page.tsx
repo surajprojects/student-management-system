@@ -18,8 +18,8 @@ export default function EditStudent({
     const handleSubmit = async (formData: StudentFormInputEdit, studentId = "") => {
         try {
             const result = await axiosInstance.patch(`/students/${studentId}`, formData);
-            toast.success('Successfully edited student details!');
             router.push(`/students/${result.data.studentData.id}/profile`);
+            toast.success('Successfully edited student details!');
             return true;
         } catch (error) {
             errorHandle(error);

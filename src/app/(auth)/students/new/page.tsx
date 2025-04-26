@@ -12,8 +12,8 @@ export default function NewStudent() {
     const handleSubmit = async (formData: StudentFormInput) => {
         try {
             const result = await axiosInstance.post('/students', formData);
-            toast.success('Student created successfully!');
             router.push(`/students/${result.data.studentData.id}/profile`);
+            toast.success('Student created successfully!');
             return true;
         } catch (error) {
             errorHandle(error);
