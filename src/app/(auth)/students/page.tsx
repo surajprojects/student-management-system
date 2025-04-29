@@ -1,20 +1,24 @@
+"use client"
+
 import Table from "@/components/students/table";
 import axiosInstance from "@/utils/axios";
 import { UserPlusIcon } from "@heroicons/react/24/outline"
+import { useEffect, useState } from "react";
 
-const getData = async () => {
-    try {
-        const result = await axiosInstance.get("/students");
-        const data = result.data.allStudents;
-        return data;
-    } catch (error) {
-        console.error("Failed to submit the form!", error);
-        return [];
-    }
-};
-
-export default async function Students() {
-    const studentsList = await getData();
+export default function Students() {
+    const [studentsList, setStudentsList] = useState([]);
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const result = await axiosInstance.get("/students");
+                const data = result.data.allStudents;
+                setStudentsList(data);
+            } catch (error) {
+                console.error("Failed to submit the form!", error);
+            }
+        };
+        getData();
+    }, []);
     return (
         <>
             <div>
