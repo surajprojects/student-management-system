@@ -66,8 +66,9 @@ export default function Card({
         getData();
     }, []);
 
-    if (isEdit) {
-        useEffect(() => {
+
+    useEffect(() => {
+        if (isEdit) {
             const getData = async () => {
                 try {
                     setIsLoading(true);
@@ -104,8 +105,8 @@ export default function Card({
                 }
             };
             getData();
-        }, []);
-    };
+        };
+    }, [isEdit, studentId]);
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = evt.target.name;

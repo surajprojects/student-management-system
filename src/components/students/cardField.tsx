@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export default function CardField({
     id = "name",
     title = "Enter Name",
@@ -7,7 +9,16 @@ export default function CardField({
     textHolder = "Enter your name",
     fieldValue,
     onChangeFunc,
-}: any) {
+}: {
+    id?: string,
+    title?: string,
+    isRequired?: boolean,
+    fieldType?: string,
+    isTextHolder?: boolean,
+    textHolder?: string,
+    fieldValue: string,
+    onChangeFunc: (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+}) {
     return (
         <>
             {isTextHolder ?

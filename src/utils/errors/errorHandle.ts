@@ -1,29 +1,32 @@
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-export function errorHandle(error: any) {
-    console.log(error);
-    if (error instanceof AxiosError) {
-        if (error.message === 'Network Error') {
-            console.error('No internet connection, please check your network.');
-        }
-        else if (error.response) {
-            const statusCode = error.response.status;
-            if (statusCode === 400 || statusCode === 411) {
-                toast.error('Bad Request. Please check your input.');
-            } else if (statusCode === 401) {
-                toast.error('Unauthorized. Please login again.');
-            } else if (statusCode === 404) {
+export function errorHandle(error: unknown) {
+    if (error instanceof AxiosError && error.response) {
+        const status = error.response.status;
+        switch (status) {
+            case 400:
+            case 411:
+                toast.error("Bad Request. Please check your input.");
+                break;
+            case 401:
+                toast.error("Unauthorized. Please login again.");
+                break;
+            case 404:
                 toast.error("Data not found!!!");
-            } else if (statusCode === 500) {
-                toast.error('Server error. Please try again later.');
-            } else {
-                toast.error(`Error: ${statusCode}`);
-            }
+                break;
+            case 500:
+                toast.error("Server error. Please try again later.");
+                break;
+            default:
+                toast.error(`Error: ${status}`);
+                break;
         }
-        else {
-            toast.error('An unexpected error occurred.');
-            console.error('An unexpected error occurred:', error.message);
-        }
+    } else if (error instanceof AxiosError && error.message === 'Network Error') {
+        console.error("No internet connection.");
+        toast.error("No internet connection.");
+    } else {
+        console.error("Unknown error:", error);
+        toast.error("Something went wrong.");
     }
 };

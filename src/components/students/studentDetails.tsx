@@ -6,11 +6,11 @@ export default function StudentDetails({ studentData }: { studentData: StudentDa
         <>
             <ul className="text-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <li>
-                    <span className="font-medium">Father's Name:</span>
+                    <span className="font-medium">Father&apos;s Name:</span>
                     <span className="mx-2">{studentData.fatherName === "" ? "N/A" : studentData.fatherName}</span>
                 </li>
                 <li>
-                    <span className="font-medium">Mother's Name:</span>
+                    <span className="font-medium">Mother&apos;s Name:</span>
                     <span className="mx-2">{studentData.motherName === "" ? "N/A" : studentData.motherName}</span>
                 </li>
                 <li>
@@ -42,7 +42,7 @@ export default function StudentDetails({ studentData }: { studentData: StudentDa
                     <span className="mx-2">{studentData.mobileNo === "" ? "N/A" : studentData.mobileNo}</span>
                 </li>
                 <li>
-                    <span className="font-medium">Guardian's Mobile No.:</span>
+                    <span className="font-medium">Guardian&apos;s Mobile No.:</span>
                     <span className="mx-2">{studentData.guardianMobileNo === "" ? "N/A" : studentData.guardianMobileNo}</span>
                 </li>
                 <li>
