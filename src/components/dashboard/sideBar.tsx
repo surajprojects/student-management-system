@@ -20,7 +20,7 @@ export default function SideBar() {
                     {/* Control Settings */}
                     <div className="flex flex-col">
                         {/* <Link href="#" className="my-1 px-4 py-2 rounded-xl hover:bg-gray-200 hover:cursor-pointer">Settings</Link> */}
-                        <Link href="#" className="my-1 px-4 py-2 rounded-xl hover:bg-red-600 hover:text-white hover:cursor-pointer">Logout</Link>
+                        <Link href="/" className="my-1 px-4 py-2 rounded-xl hover:bg-red-600 hover:text-white hover:cursor-pointer">Logout</Link>
                     </div>
                 </nav>
             </aside>
