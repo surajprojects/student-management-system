@@ -4,7 +4,7 @@
 
 This is a quick MVP of a **Student Management System** built using **Next.js**. The app allows basic student and payment management, with a dashboard for an overview of fee and student data.
 
-🔗 **Live App**: [Student Management System](https://student-management-system-42m1.onrender.com)
+**Live App**: [Student Management System](https://student-management-system-42m1.onrender.com)
 
 ## Features
 
