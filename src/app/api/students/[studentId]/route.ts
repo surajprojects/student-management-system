@@ -1,13 +1,21 @@
 import prisma from "@/db";
+import { NextRequest } from "next/server";
+import { verifyUser } from "@/lib/apiAuth";
 import { PrismaClientKnownRequestError } from "@/db/generated/prisma/runtime/library";
 import { studentFormInputEdit, StudentFormInputEdit } from "@/utils/validators/studentInput";
 
-export async function GET(_req: Request, { params }: { params: { studentId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { studentId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { studentId } = params;
 
         const studentData = await prisma.student.findUnique({
-            where: { id: studentId },
+            where: { id: studentId, userId: String(token.id), },
             include: { batch: true, course: true, payments: true, documents: true }
         });
 
@@ -23,8 +31,14 @@ export async function GET(_req: Request, { params }: { params: { studentId: stri
     }
 };
 
-export async function PATCH(req: Request, { params }: { params: { studentId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: { studentId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { studentId } = params;
         const data: StudentFormInputEdit = await req.json();
         const parsedInput = studentFormInputEdit.safeParse(data);
@@ -33,7 +47,7 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
             return Response.json({ message: "Invalid input!!!", details: parsedInput.error.errors }, { status: 400 });
         }
 
-        const foundStudent = await prisma.student.findUnique({ where: { id: studentId } });
+        const foundStudent = await prisma.student.findUnique({ where: { id: studentId, userId: String(token.id), } });
 
         if (!foundStudent) {
             return Response.json({ message: "Student not found!!!" }, { status: 404 });
@@ -45,7 +59,8 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
         if (parsedInput.data.course) {
             courseId = await prisma.course.findUnique({
                 where: {
-                    code: parsedInput.data.course
+                    code: parsedInput.data.course,
+                    userId: String(token.id),
                 }
             });
 
@@ -57,7 +72,8 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
         if (parsedInput.data.batch) {
             batchId = await prisma.batch.findUnique({
                 where: {
-                    code: parsedInput.data.batch
+                    code: parsedInput.data.batch,
+                    userId: String(token.id),
                 }
             });
 
@@ -67,7 +83,7 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
         }
 
         const studentData = await prisma.student.update({
-            where: { id: studentId },
+            where: { id: studentId, userId: String(token.id), },
             data: {
                 ...(parsedInput.data.fullName && { fullName: parsedInput.data.fullName }),
                 ...(parsedInput.data.fatherName && { fatherName: parsedInput.data.fatherName }),
@@ -91,7 +107,7 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
             }
         });
 
-        return Response.json({ message: "Successfully edited the student!!!", studentData }, { status: 200 });
+        return Response.json({ message: "Successfully updated the student!!!", studentData }, { status: 200 });
     }
     catch (error) {
         console.log(error)
@@ -99,12 +115,18 @@ export async function PATCH(req: Request, { params }: { params: { studentId: str
     }
 };
 
-export async function DELETE(_req: Request, { params }: { params: { studentId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { studentId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { studentId } = params;
 
         await prisma.student.delete({
-            where: { id: studentId }
+            where: { id: studentId, userId: String(token.id), }
         });
 
         return Response.json({ message: "Successfully deleted the student!!!" }, { status: 200 });

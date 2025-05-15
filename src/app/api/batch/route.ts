@@ -1,25 +1,20 @@
 import prisma from "@/db";
+import { verifyUser } from "@/lib/apiAuth";
 import { batchFormInput, BatchFormInput } from "@/utils/validators/batchInput";
+import { NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
+        const token = await verifyUser(req);
 
-        // Dummy Data Only for development 
-        // await prisma.batch.createMany({
-        //     data: [
-        //         { code: 'B01T7AM', name: 'Batch 01 Time 7 AM', time: '7:00 AM' },
-        //         { code: 'B02T8AM', name: 'Batch 02 Time 8 AM', time: '8:00 AM' },
-        //         { code: 'B03T9AM', name: 'Batch 03 Time 9 AM', time: '9:00 AM' },
-        //         { code: 'B04T10AM', name: 'Batch 04 Time 10 AM', time: '10:00 AM' },
-        //         { code: 'B05T11AM', name: 'Batch 05 Time 11 AM', time: '11:00 AM' },
-        //         { code: 'B06T3PM', name: 'Batch 06 Time 3 PM', time: '3:00 PM' },
-        //         { code: 'B07T4PM', name: 'Batch 07 Time 4 PM', time: '4:00 PM' },
-        //         { code: 'B08T5PM', name: 'Batch 08 Time 5 PM', time: '5:00 PM' },
-        //         { code: 'B09T6PM', name: 'Batch 09 Time 6 PM', time: '6:00 PM' },
-        //     ],
-        // });
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
 
-        const allBatches = await prisma.batch.findMany({ include: { students: true } });
+        const allBatches = await prisma.batch.findMany({
+            where: { userId: String(token.id) },
+            include: { students: true }
+        });
 
         if (!allBatches) {
             return Response.json({ message: "Batch not found!!!" }, { status: 404 });
@@ -33,8 +28,14 @@ export async function GET() {
     }
 };
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const data: BatchFormInput = await req.json();
         const parsedInput = batchFormInput.safeParse(data);
 
@@ -42,7 +43,12 @@ export async function POST(req: Request) {
             return Response.json({ message: "Invalid input!!!", details: parsedInput.error.errors }, { status: 400 });
         }
 
-        const foundBatch = await prisma.batch.findUnique({ where: { code: parsedInput.data.code } });
+        const foundBatch = await prisma.batch.findUnique({
+            where: {
+                userId: String(token.id),
+                code: parsedInput.data.code
+            }
+        });
 
         if (foundBatch) {
             return Response.json({ message: "Duplicate batch code!!!" }, { status: 409 });
@@ -53,10 +59,11 @@ export async function POST(req: Request) {
                 code: parsedInput.data.code,
                 name: parsedInput.data.name,
                 time: parsedInput.data.time,
+                userId: String(token.id),
             }
         });
 
-        return Response.json({ message: "Successfully created the course!!!", batchData }, { status: 201 });
+        return Response.json({ message: "Successfully created the batch!!!", batchData }, { status: 201 });
     }
     catch (error) {
         console.log(error);

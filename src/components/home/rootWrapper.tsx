@@ -1,6 +1,7 @@
 "use client"
 
 import { RecoilRoot } from "recoil";
+import { SessionProvider } from "next-auth/react";
 
 export default function RootWrapper({
     children,
@@ -9,9 +10,11 @@ export default function RootWrapper({
 }>) {
     return (
         <>
-            <RecoilRoot>
-                {children}
-            </RecoilRoot>
+            <SessionProvider>
+                <RecoilRoot>
+                    {children}
+                </RecoilRoot>
+            </SessionProvider>
         </>
     );
 };

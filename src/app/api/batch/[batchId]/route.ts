@@ -1,14 +1,24 @@
 import prisma from "@/db";
-
+import { NextRequest } from "next/server";
+import { verifyUser } from "@/lib/apiAuth";
 import { PrismaClientKnownRequestError } from "@/db/generated/prisma/runtime/library";
 import { BatchFormInputEdit, batchFormInputEdit } from "@/utils/validators/batchInput";
 
-export async function GET(_req: Request, { params }: { params: { batchId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { batchId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { batchId } = params;
 
         const batchData = await prisma.batch.findUnique({
-            where: { id: batchId },
+            where: {
+                id: batchId,
+                userId: String(token.id),
+            },
             include: { students: true }
         });
 
@@ -24,8 +34,14 @@ export async function GET(_req: Request, { params }: { params: { batchId: string
     }
 };
 
-export async function PATCH(req: Request, { params }: { params: { batchId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: { batchId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { batchId } = params;
         const data: BatchFormInputEdit = await req.json();
         const parsedInput = batchFormInputEdit.safeParse(data);
@@ -35,7 +51,10 @@ export async function PATCH(req: Request, { params }: { params: { batchId: strin
         }
 
         const batchData = await prisma.batch.update({
-            where: { id: batchId },
+            where: {
+                id: batchId,
+                userId: String(token.id),
+            },
             data: {
                 ...(parsedInput.data.code && { code: parsedInput.data.code }),
                 ...(parsedInput.data.name && { name: parsedInput.data.name }),
@@ -43,7 +62,7 @@ export async function PATCH(req: Request, { params }: { params: { batchId: strin
             }
         });
 
-        return Response.json({ message: "Successfully edited the batch!!!", batchData }, { status: 200 });
+        return Response.json({ message: "Successfully updated the batch!!!", batchData }, { status: 200 });
     }
     catch (error) {
         console.log(error);
@@ -57,12 +76,21 @@ export async function PATCH(req: Request, { params }: { params: { batchId: strin
     }
 };
 
-export async function DELETE(_req: Request, { params }: { params: { batchId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { batchId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { batchId } = params;
 
         await prisma.batch.delete({
-            where: { id: batchId }
+            where: {
+                id: batchId,
+                userId: String(token.id),
+            }
         });
 
         return Response.json({ message: "Successfully deleted the batch!!!" }, { status: 200 });

@@ -1,19 +1,30 @@
 import prisma from "@/db";
 
+import { NextRequest } from "next/server";
 import { PrismaClientKnownRequestError } from "@/db/generated/prisma/runtime/library";
 import { courseFormInputEdit, CourseFormInputEdit } from "@/utils/validators/courseInput";
+import { verifyUser } from "@/lib/apiAuth";
 
-export async function GET(_req: Request, { params }: { params: { courseId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { courseId } = params;
 
         const courseData = await prisma.course.findUnique({
-            where: { id: courseId },
+            where: {
+                id: courseId,
+                userId: String(token.id),
+            },
             include: { students: true }
         });
 
         if (!courseData) {
-            return Response.json({ message: "Courses not found!!!" }, { status: 404 });
+            return Response.json({ message: "Course not found!!!" }, { status: 404 });
         }
 
         return Response.json({ message: "Successfully found the course!!!", courseData }, { status: 200 });
@@ -24,8 +35,14 @@ export async function GET(_req: Request, { params }: { params: { courseId: strin
     }
 };
 
-export async function PATCH(req: Request, { params }: { params: { courseId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: { courseId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { courseId } = params;
         const data: CourseFormInputEdit = await req.json();
         const parsedInput = courseFormInputEdit.safeParse(data);
@@ -35,7 +52,7 @@ export async function PATCH(req: Request, { params }: { params: { courseId: stri
         }
 
         const courseData = await prisma.course.update({
-            where: { id: courseId },
+            where: { id: courseId, userId: String(token.id), },
             data: {
                 ...(parsedInput.data.code && { code: parsedInput.data.code }),
                 ...(parsedInput.data.name && { name: parsedInput.data.name }),
@@ -45,7 +62,7 @@ export async function PATCH(req: Request, { params }: { params: { courseId: stri
             }
         });
 
-        return Response.json({ message: "Successfully edited the course!!!", courseData }, { status: 200 });
+        return Response.json({ message: "Successfully updated the course!!!", courseData }, { status: 200 });
     }
     catch (error) {
         console.log(error);
@@ -59,12 +76,18 @@ export async function PATCH(req: Request, { params }: { params: { courseId: stri
     }
 };
 
-export async function DELETE(_req: Request, { params }: { params: { courseId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { courseId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { courseId } = params;
 
         await prisma.course.delete({
-            where: { id: courseId }
+            where: { id: courseId, userId: String(token.id), }
         });
 
         return Response.json({ message: "Successfully deleted the course!!!" }, { status: 200 });

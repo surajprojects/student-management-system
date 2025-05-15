@@ -1,83 +1,23 @@
 import prisma from "@/db";
+import { NextRequest } from "next/server";
+import { verifyUser } from "@/lib/apiAuth";
 import { courseFormInput, CourseFormInput } from "@/utils/validators/courseInput";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
+        const token = await verifyUser(req);
 
-        // Dummy Data Only for development 
-        // await prisma.course.createMany({
-        //     data: [
-        //         {
-        //             code: "DCA",
-        //             name: "Diploma in Computer Applications",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 12,
-        //             fees: 7500,
-        //         },
-        //         {
-        //             code: "PGDCA",
-        //             name: "Post Graduate Diploma in Computer Applications",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 12,
-        //             fees: 8500,
-        //         },
-        //         {
-        //             code: "TALLY",
-        //             name: "Tally",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 4,
-        //             fees: 4000,
-        //         },
-        //         {
-        //             code: "TYPING",
-        //             name: "Typing",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 1,
-        //             fees: 500,
-        //         },
-        //         {
-        //             code: "ENGLISHTYPING",
-        //             name: "English Typing",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 1,
-        //             fees: 500,
-        //         },
-        //         {
-        //             code: "HINDITYPING",
-        //             name: "Hindi Typing",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 1,
-        //             fees: 500,
-        //         },
-        //         {
-        //             code: "BASIC01",
-        //             name: "Basic Monthly",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 1,
-        //             fees: 500,
-        //         },
-        //         {
-        //             code: "BASIC03",
-        //             name: "Basic 3 Months",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 3,
-        //             fees: 1800,
-        //         },
-        //         {
-        //             code: "BASIC06",
-        //             name: "Basic 6 Months",
-        //             instituteName: "Dikshant Institute",
-        //             duration: 6,
-        //             fees: 2500,
-        //         },
-        //     ],
-        // });
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
 
-
-        const allCourses = await prisma.course.findMany({ include: { students: true } });
+        const allCourses = await prisma.course.findMany({
+            where: { userId: String(token.id) },
+            include: { students: true }
+        });
 
         if (!allCourses) {
-            return Response.json({ message: "Courses not found!!!" }, { status: 404 });
+            return Response.json({ message: "Course not found!!!" }, { status: 404 });
         }
 
         return Response.json({ message: "Successfully found all courses!!!", allCourses }, { status: 200 });
@@ -88,8 +28,14 @@ export async function GET() {
     }
 };
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const data: CourseFormInput = await req.json();
         const parsedInput = courseFormInput.safeParse(data);
 
@@ -97,7 +43,12 @@ export async function POST(req: Request) {
             return Response.json({ message: "Invalid input!!!", details: parsedInput.error.errors }, { status: 400 });
         }
 
-        const foundCourse = await prisma.course.findUnique({ where: { code: parsedInput.data.code } });
+        const foundCourse = await prisma.course.findUnique({
+            where: {
+                code: parsedInput.data.code,
+                userId: String(token.id),
+            }
+        });
 
         if (foundCourse) {
             return Response.json({ message: "Duplicate course code!!!" }, { status: 409 });
@@ -110,6 +61,7 @@ export async function POST(req: Request) {
                 instituteName: parsedInput.data.instituteName,
                 duration: parsedInput.data.duration,
                 fees: parsedInput.data.fees,
+                userId: String(token.id),
             }
         });
 

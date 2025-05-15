@@ -1,9 +1,25 @@
 import prisma from "@/db";
+import { NextRequest } from "next/server";
+import { verifyUser } from "@/lib/apiAuth";
 import { studentFormInput, StudentFormInput } from "@/utils/validators/studentInput";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
-        const allStudents = await prisma.student.findMany({ include: { course: true, batch: true } });
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
+        const allStudents = await prisma.student.findMany({
+            where: {
+                userId: String(token.id)
+            },
+            include: {
+                course: true,
+                batch: true
+            }
+        });
 
         if (!allStudents) {
             return Response.json({ message: "Students not found!!!" }, { status: 404 });
@@ -17,8 +33,14 @@ export async function GET() {
     }
 };
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const data: StudentFormInput = await req.json();
         const parsedInput = studentFormInput.safeParse(data);
 
@@ -29,6 +51,7 @@ export async function POST(req: Request) {
         const courseId = await prisma.course.findUnique({
             where: {
                 code: parsedInput.data.course,
+                userId: String(token.id),
             }
         });
 
@@ -37,7 +60,10 @@ export async function POST(req: Request) {
         }
 
         const batchId = await prisma.batch.findUnique({
-            where: { code: parsedInput.data.batch }
+            where: {
+                code: parsedInput.data.batch,
+                userId: String(token.id),
+            }
         });
 
         if (!batchId) {
@@ -62,6 +88,7 @@ export async function POST(req: Request) {
                 institute: parsedInput.data.institute,
                 totalFees: Number(parsedInput.data.totalFees),
                 session: parsedInput.data.session,
+                userId: String(token.id),
                 ...(parsedInput.data.email && { email: parsedInput.data.email }),
                 ...(parsedInput.data.instituteName && { instituteName: parsedInput.data.instituteName }),
                 ...(parsedInput.data.remarks && { remarks: parsedInput.data.remarks }),

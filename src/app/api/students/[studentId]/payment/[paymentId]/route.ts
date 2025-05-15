@@ -1,12 +1,20 @@
 import prisma from "@/db";
+import { NextRequest } from "next/server";
+import { verifyUser } from "@/lib/apiAuth";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
-export async function DELETE(_req: Request, { params }: { params: { studentId: string, paymentId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { studentId: string, paymentId: string } }) {
     try {
+        const token = await verifyUser(req);
+
+        if (!token) {
+            return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
+        }
+
         const { studentId, paymentId } = params;
 
         await prisma.payment.delete({
-            where: { id: paymentId, studentId: studentId }
+            where: { id: paymentId, studentId: studentId, }
         });
 
         return Response.json({ message: "Successfully deleted the payment!!!" }, { status: 200 });
