@@ -4,7 +4,7 @@ export const courseFormInput = z.object({
     code: z.string(),
     name: z.string(),
     instituteName: z.string(),
-    duration: z.number(),
+    duration: z.string(),
     fees: z.number(),
 }).strict();
 
@@ -14,7 +14,7 @@ export const courseFormInputEdit = z.object({
     code: z.string().optional(),
     name: z.string().optional(),
     instituteName: z.string().optional(),
-    duration: z.number().optional(),
+    duration: z.string().optional(),
     fees: z.number().optional(),
 }).strict();
 

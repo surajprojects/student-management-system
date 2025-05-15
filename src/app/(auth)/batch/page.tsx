@@ -1,8 +1,25 @@
-import Card from "@/components/batch/batchForm";
-import BatchList from "@/components/batch/batchlist";
-import BtnAddBatch from "@/components/batch/btnAddBatch";
+"use client"
 
-export default function FeesTracker() {
+import { useEffect, useState } from "react";
+
+import BtnAddBatch from "@/components/batch/btnAddBatch";
+import axiosInstance from "@/utils/axios";
+import BatchList from "@/components/batch/batchList";
+
+export default function Batch() {
+    const [batchList, setBatchList] = useState([]);
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const result = await axiosInstance.get("/batch");
+                const data = result.data.allBatches;
+                setBatchList(data);
+            } catch (error) {
+                console.error("Failed to submit the form!", error);
+            }
+        };
+        getData();
+    }, []);
     return (
         <>
             <div>
@@ -11,7 +28,7 @@ export default function FeesTracker() {
                     <BtnAddBatch />
                 </div>
                 <div>
-                    <BatchList />
+                    <BatchList batchData={batchList} />
                 </div>
             </div>
         </>

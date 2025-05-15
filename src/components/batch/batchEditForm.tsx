@@ -3,15 +3,22 @@
 import { toast } from "react-toastify";
 import axiosInstance from "@/utils/axios";
 import CardField from "../students/cardField";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { errorHandle } from "@/utils/errors/errorHandle";
 
-export default function BatchForm({ displayForm }: { displayForm: (value: boolean) => void }) {
-    const initialData = {
-        code: "",
-        name: "",
-        time: "",
-    };
+export default function BatchEditForm({ batchId = "", displayForm, initialData = {
+    code: "",
+    name: "",
+    time: "",
+} }: {
+    batchId: string,
+    displayForm: (value: boolean) => void,
+    initialData?: {
+        code: string,
+        name: string,
+        time: string,
+    },
+}) {
 
     const [formData, setFormData] = useState(initialData);
 
@@ -26,13 +33,33 @@ export default function BatchForm({ displayForm }: { displayForm: (value: boolea
         });
     };
 
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const result = await axiosInstance.get(`/batch/${batchId}`);
+                const data = result.data.batchData;
+                setFormData((prevData) => {
+                    return {
+                        ...prevData,
+                        code: data.code,
+                        name: data.name,
+                        time: data.time,
+                    }
+                });
+            } catch (error) {
+                errorHandle(error);
+            }
+        };
+        getData();
+    }, []);
+
     const handleSubmit = async (evt: FormEvent) => {
         evt.preventDefault();
         try {
-            const result = await axiosInstance.post("/batch", formData);
-            if (result.status === 201) {
+            const result = await axiosInstance.patch(`/batch/${batchId}`, formData);
+            if (result.status === 200) {
                 displayForm(false);
-                toast.success("Batch created successfully!!!");
+                toast.success("Batch updated successfully!!!");
             }
         } catch (error) {
             errorHandle(error);

@@ -4,6 +4,7 @@ import { PaymentsList } from "./paymentType";
 
 export interface StudentData {
     id: string,
+    userId: string,
     fullName: string,
     fatherName: string,
     motherName: string,

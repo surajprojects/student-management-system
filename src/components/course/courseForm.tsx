@@ -6,11 +6,13 @@ import CardField from "../students/cardField";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { errorHandle } from "@/utils/errors/errorHandle";
 
-export default function BatchForm({ displayForm }: { displayForm: (value: boolean) => void }) {
+export default function CourseForm({ displayForm }: { displayForm: (value: boolean) => void }) {
     const initialData = {
         code: "",
         name: "",
-        time: "",
+        instituteName: "",
+        duration: "",
+        fees: "",
     };
 
     const [formData, setFormData] = useState(initialData);
@@ -29,10 +31,13 @@ export default function BatchForm({ displayForm }: { displayForm: (value: boolea
     const handleSubmit = async (evt: FormEvent) => {
         evt.preventDefault();
         try {
-            const result = await axiosInstance.post("/batch", formData);
+            const result = await axiosInstance.post("/course", {
+                ...formData,
+                fees: Number(formData.fees)
+            });
             if (result.status === 201) {
                 displayForm(false);
-                toast.success("Batch created successfully!!!");
+                toast.success("Course created successfully!!!");
             }
         } catch (error) {
             errorHandle(error);
@@ -43,13 +48,13 @@ export default function BatchForm({ displayForm }: { displayForm: (value: boolea
         <>
             <form
                 onSubmit={handleSubmit}
-                className="h-44 flex flex-col justify-around"
+                className="h-56 flex flex-col justify-around"
             >
                 {/* Code */}
                 <CardField
                     id="code"
                     title="Code"
-                    textHolder="Enter the batch code"
+                    textHolder="Enter the course code"
                     fieldValue={formData.code}
                     onChangeFunc={handleChange}
                 />
@@ -57,18 +62,41 @@ export default function BatchForm({ displayForm }: { displayForm: (value: boolea
                 <CardField
                     id="name"
                     title="Name"
-                    textHolder="Enter the batch name"
+                    textHolder="Enter the course name"
                     fieldValue={formData.name}
                     onChangeFunc={handleChange}
                 />
-                {/* Time */}
+                {/* Institute Name */}
                 <CardField
-                    id="time"
-                    title="Time"
-                    textHolder="Enter the batch time"
-                    fieldValue={formData.time}
+                    id="instituteName"
+                    title="Institute Name"
+                    textHolder="Enter the course institute name"
+                    fieldValue={formData.instituteName}
                     onChangeFunc={handleChange}
                 />
+                {/* Duration */}
+                <CardField
+                    id="duration"
+                    title="Duration"
+                    textHolder="Enter the course duration"
+                    fieldValue={formData.duration}
+                    onChangeFunc={handleChange}
+                />
+                {/* Fees */}
+                <div>
+                    <label htmlFor="fees">Fees*</label>
+                    <input
+                        type="number"
+                        name="fees"
+                        id="fees"
+                        maxLength={10}
+                        value={formData.fees}
+                        onChange={handleChange}
+                        placeholder="Enter the course fees"
+                        className="mx-2 border-2 rounded-md px-1"
+                        required
+                    />
+                </div>
                 {/* Button */}
                 <button type="submit" className="bg-green-500 text-white px-2 py-1 rounded-md shadow hover:cursor-pointer">Submit</button>
             </form>

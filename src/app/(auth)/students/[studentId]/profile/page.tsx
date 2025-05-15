@@ -1,32 +1,78 @@
+"use client"
+
 import ActionBtns from "@/components/students/actionBtns";
 import PaymentBtn from "@/components/students/paymentBtn";
 import PaymentDetails from "@/components/students/paymentDetails";
 import StudentDetails from "@/components/students/studentDetails";
 import axiosInstance from "@/utils/axios";
 import { StudentData } from "@/utils/common/studentType";
+import { errorHandle } from "@/utils/errors/errorHandle";
+import { useEffect, useState } from "react";
 
-const getStudentData = async (studentId: string) => {
-    try {
-        const result = await axiosInstance.get(`/students/${studentId}`);
-        if (result.status === 200) {
-            const data = result.data.studentData;
-            return data;
-        }
-        else {
-            return {};
-        }
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-export default async function ProfileStudent({
+export default function ProfileStudent({
     params
 }: {
     params: { studentId: string }
 }) {
+    const initialData = {
+        id: "",
+        userId: "",
+        fullName: "",
+        fatherName: "",
+        motherName: "",
+        dob: "",
+        gender: "",
+        category: "",
+        class: "",
+        institute: "",
+        instituteName: "",
+        mobileNo: "",
+        guardianMobileNo: "",
+        email: "",
+        address: "",
+        courseId: "",
+        batchId: "",
+        enrolledOn: "",
+        totalFees: 0,
+        session: "",
+        photo: "",
+        remarks: "",
+        createdAt: "",
+        updatedAt: "",
+        batch: {
+            id: "",
+            code: "",
+            name: "",
+            time: "",
+            students: [],
+        },
+        course: {
+            id: "",
+            code: "",
+            name: "",
+            instituteName: "",
+            duration: "",
+            fees: 0,
+            students: [],
+        },
+        payments: [],
+    }
     const { studentId } = params;
-    const studentData: StudentData = await getStudentData(studentId);
+    const [studentData, setStudentData] = useState<StudentData>(initialData);
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const result = await axiosInstance.get(`/students/${studentId}`);
+                if (result.status === 200) {
+                    const data = result.data.studentData;
+                    setStudentData(data);
+                }
+            } catch (error) {
+                errorHandle(error);
+            }
+        };
+        getData();
+    }, []);
     if (!studentData) {
         return (
             <>

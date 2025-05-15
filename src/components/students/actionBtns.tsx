@@ -11,7 +11,7 @@ export default function ActionBtns({ studentId, paymentBtn = false, paymentId = 
 
     const router = useRouter();
 
-    const handleDelete = async (studentId: string) => {
+    const handleDelete = async () => {
         try {
             const result = await axiosInstance.delete(`/students/${studentId}`);
             if (result.status === 200) {
@@ -23,7 +23,7 @@ export default function ActionBtns({ studentId, paymentBtn = false, paymentId = 
         }
     };
 
-    const handlePaymentDelete = async (studentId: string, paymentId: string) => {
+    const handlePaymentDelete = async () => {
         try {
             const result = await axiosInstance.delete(`/students/${studentId}/payment/${paymentId}`);
             if (result.status === 200) {
@@ -37,11 +37,11 @@ export default function ActionBtns({ studentId, paymentBtn = false, paymentId = 
     return (
         <>
             {paymentBtn ?
-                <button type="button" onClick={() => handlePaymentDelete(studentId, paymentId)} className="hover:text-red-500"><TrashIcon className="w-6 h-6" /></button>
+                <button type="button" onClick={handlePaymentDelete} className="hover:text-red-500"><TrashIcon className="w-6 h-6" /></button>
                 :
                 <div className="flex items-center">
                     <Link href={`/students/${studentId}/edit`} className="hover:text-blue-500"><PencilIcon className="w-6 h-6 mx-2" /></Link>
-                    <button onClick={() => handleDelete(studentId)} className="hover:text-red-500"><TrashIcon className="w-6 h-6" /></button>
+                    <button onClick={handleDelete} className="hover:text-red-500"><TrashIcon className="w-6 h-6" /></button>
                 </div>
             }
         </>

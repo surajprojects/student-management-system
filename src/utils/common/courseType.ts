@@ -5,7 +5,7 @@ export interface CourseData {
     code: string,
     name: string,
     instituteName: string,
-    duration: number,
+    duration: string,
     fees: number,
     students: StudentData[],
 };

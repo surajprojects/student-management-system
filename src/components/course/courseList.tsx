@@ -1,7 +1,7 @@
-import { BatchesList } from "@/utils/common/batchType";
-import BatchActionBtns from "./batchActionBtns";
+import { CoursesList } from "@/utils/common/courseType";
+import CourseActionBtns from "./courseActionBtns";
 
-export default function BatchList({ batchData }: { batchData: BatchesList }) {
+export default function CourseList({ courseData }: { courseData: CoursesList }) {
     return (
         <>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -18,7 +18,13 @@ export default function BatchList({ batchData }: { batchData: BatchesList }) {
                                 Name
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Time
+                                Institute Name
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Duration
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Fees
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Action
@@ -26,28 +32,34 @@ export default function BatchList({ batchData }: { batchData: BatchesList }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {batchData.length > 0 ?
-                            batchData.map((batch, idx: number) => {
+                        {courseData.length > 0 ?
+                            courseData.map((course, idx: number) => {
                                 return <tr key={idx} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
                                     <td className="px-6 py-4">
                                         {idx + 1}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {batch.code}
+                                        {course.code}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {batch.name}
+                                        {course.name}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {batch.time}
+                                        {course.instituteName}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <BatchActionBtns batchId={batch.id} />
+                                        {course.duration}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        Rs.{course.fees}/-
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <CourseActionBtns courseId={course.id} />
                                     </td>
                                 </tr>
                             })
                             :
-                            <tr className="h-14"><td colSpan={5} className="text-center">No batch found!!!</td></tr>
+                            <tr className="h-14"><td colSpan={7} className="text-center">No course found!!!</td></tr>
                         }
                     </tbody>
                 </table>
