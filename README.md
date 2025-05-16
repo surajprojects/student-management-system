@@ -4,7 +4,7 @@
 
 This is a **fully functional Student Management System** built using **Next.js**. The app allows student, batch, course, and payment management, with authentication and a dashboard to track everything at a glance.
 
-**Live App**: [Student Management System](https://student-management-system-42m1.onrender.com)
+**Live App** [Student Management System](https://student-management-system-42m1.onrender.com)
 
 ## Features
 
