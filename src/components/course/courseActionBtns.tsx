@@ -44,7 +44,7 @@ export default function CourseActionBtns({ courseId }: { courseId: string }) {
                         </button>
 
                         <div className="border-b-2 pb-2 mb-5">
-                            <p className="text-2xl font-semibold">Edit Course</p>
+                            <p className="text-2xl font-semibold text-black">Edit Course</p>
                         </div>
                         <CourseEditForm displayForm={setShowForm} courseId={courseId} />
                     </div>

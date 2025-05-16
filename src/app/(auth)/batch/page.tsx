@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import BtnAddBatch from "@/components/batch/btnAddBatch";
 import axiosInstance from "@/utils/axios";
 import BatchList from "@/components/batch/batchList";
+import { errorHandle } from "@/utils/errors/errorHandle";
 
 export default function Batch() {
     const [batchList, setBatchList] = useState([]);
@@ -15,7 +16,7 @@ export default function Batch() {
                 const data = result.data.allBatches;
                 setBatchList(data);
             } catch (error) {
-                console.error("Failed to submit the form!", error);
+                errorHandle(error);
             }
         };
         getData();

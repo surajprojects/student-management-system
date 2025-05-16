@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CurrencyRupeeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import PaymentForm from "./paymentForm";
+import { CurrencyRupeeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function PaymentBtn({ studentId = "" }: { studentId: string }) {
     const [showForm, setShowForm] = useState(false);
@@ -24,7 +24,7 @@ export default function PaymentBtn({ studentId = "" }: { studentId: string }) {
                         </button>
 
                         <div className="border-b-2 pb-2 mb-5">
-                            <p className="text-2xl font-semibold">Add Payment</p>
+                            <p className="text-2xl font-semibold text-black">Add Payment</p>
                         </div>
                         <PaymentForm studentId={studentId} displayForm={setShowForm} />
                     </div>

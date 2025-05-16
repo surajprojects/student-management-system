@@ -33,3 +33,15 @@ export interface StudentData {
 };
 
 export type StudentsList = StudentData[];
+
+export interface StudentFeesData {
+    id: string,
+    fullName: string,
+    fatherName: string,
+    course: string,
+    session: string,
+    totalFees: number,
+    paidFees: number,
+};
+
+export type StudentsFeesList = StudentFeesData[];

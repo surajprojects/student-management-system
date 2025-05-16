@@ -82,7 +82,7 @@ export default function CourseEditForm({
         <>
             <form
                 onSubmit={handleSubmit}
-                className="h-56 flex flex-col justify-around"
+                className="h-56 flex flex-col justify-around text-black"
             >
                 {/* Code */}
                 <CardField
@@ -118,7 +118,7 @@ export default function CourseEditForm({
                 />
                 {/* Fees */}
                 <div>
-                    <label htmlFor="fees">Fees*</label>
+                    <label htmlFor="fees" className="text-black">Fees*</label>
                     <input
                         type="number"
                         name="fees"
@@ -127,7 +127,7 @@ export default function CourseEditForm({
                         value={formData.fees}
                         onChange={handleChange}
                         placeholder="Enter the course fees"
-                        className="mx-2 border-2 rounded-md px-1"
+                        className="mx-2 border-2 rounded-md px-1 text-black"
                         required
                     />
                 </div>

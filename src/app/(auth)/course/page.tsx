@@ -4,6 +4,7 @@ import CourseList from "@/components/course/courseList";
 import BtnAddCourse from "@/components/course/btnAddCourse";
 import axiosInstance from "@/utils/axios";
 import { useEffect, useState } from "react";
+import { errorHandle } from "@/utils/errors/errorHandle";
 
 export default function Course() {
     const [courseList, setCourseList] = useState([]);
@@ -14,7 +15,7 @@ export default function Course() {
                 const data = result.data.allCourses;
                 setCourseList(data);
             } catch (error) {
-                console.error("Failed to submit the form!", error);
+                errorHandle(error);
             }
         };
         getData();

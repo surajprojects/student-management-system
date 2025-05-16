@@ -84,7 +84,7 @@ export default function CourseForm({ displayForm }: { displayForm: (value: boole
                 />
                 {/* Fees */}
                 <div>
-                    <label htmlFor="fees">Fees*</label>
+                    <label htmlFor="fees" className="text-black">Fees*</label>
                     <input
                         type="number"
                         name="fees"
@@ -93,7 +93,7 @@ export default function CourseForm({ displayForm }: { displayForm: (value: boole
                         value={formData.fees}
                         onChange={handleChange}
                         placeholder="Enter the course fees"
-                        className="mx-2 border-2 rounded-md px-1"
+                        className="mx-2 border-2 rounded-md px-1 text-black"
                         required
                     />
                 </div>

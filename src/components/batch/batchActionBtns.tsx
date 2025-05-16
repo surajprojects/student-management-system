@@ -44,7 +44,7 @@ export default function BatchActionBtns({ batchId }: { batchId: string }) {
                         </button>
 
                         <div className="border-b-2 pb-2 mb-5">
-                            <p className="text-2xl font-semibold">Edit Batch</p>
+                            <p className="text-2xl font-semibold text-black">Edit Batch</p>
                         </div>
                         <BatchEditForm displayForm={setShowForm} batchId={batchId} />
                     </div>

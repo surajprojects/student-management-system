@@ -23,7 +23,7 @@ export default function BtnAddBatch() {
                         </button>
 
                         <div className="border-b-2 pb-2 mb-5">
-                            <p className="text-2xl font-semibold">Add Batch</p>
+                            <p className="text-2xl font-semibold text-black">Add Batch</p>
                         </div>
                         <BatchForm displayForm={setShowForm} />
                     </div>

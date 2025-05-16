@@ -60,6 +60,16 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Batch {
+  id       String    @id @default(cuid())
+  code     String    @unique
+  name     String
+  time     String
+  students Student[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String
+}
+
 model Course {
   id            String    @id @default(cuid())
   code          String    @unique
@@ -72,25 +82,15 @@ model Course {
   userId        String
 }
 
-model Batch {
-  id       String    @id @default(cuid())
-  code     String    @unique
-  name     String
-  time     String
-  students Student[]
-  user     User      @relation(fields: [userId], references: [id])
-  userId   String
-}
-
 model Student {
   id               String    @id @default(cuid())
   fullName         String
   fatherName       String
   motherName       String
   dob              DateTime
+  class            String
   gender           Gender
   category         Category
-  class            String
   institute        Institute
   instituteName    String?
   mobileNo         String

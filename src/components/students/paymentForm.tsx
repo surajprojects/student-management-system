@@ -46,13 +46,13 @@ export default function PaymentForm({ studentId = "", displayForm }: { studentId
             <form onSubmit={handleSubmit}>
                 {/* Payment Method */}
                 <div>
-                    <label htmlFor="method">Payment Method</label>
+                    <label htmlFor="method" className="text-black">Payment Method</label>
                     <select
                         name="method"
                         id="method"
                         value={formData.method}
                         onChange={handleChange}
-                        className="mb-4 border-2 rounded-md px-1"
+                        className="mb-4 mx-2 border-2 rounded-md px-1 text-black"
                     >
                         <option value="" disabled>Select Method</option>
                         <option value="CASH">CASH</option>
@@ -63,7 +63,7 @@ export default function PaymentForm({ studentId = "", displayForm }: { studentId
                 </div>
                 {/* Amount */}
                 <div>
-                    <label htmlFor="amount">Amount</label>
+                    <label htmlFor="amount" className="text-black">Amount</label>
                     <input
                         type="number"
                         name="amount"
@@ -71,7 +71,7 @@ export default function PaymentForm({ studentId = "", displayForm }: { studentId
                         placeholder="Enter the amount"
                         value={formData.amount}
                         onChange={handleChange}
-                        className="mb-4 border-2 rounded-md px-1"
+                        className="mb-4 border-2 mx-2 rounded-md px-1 text-black"
                         required
                     />
                 </div>

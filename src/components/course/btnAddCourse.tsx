@@ -23,7 +23,7 @@ export default function BtnAddCourse() {
                         </button>
 
                         <div className="border-b-2 pb-2 mb-5">
-                            <p className="text-2xl font-semibold">Add Course</p>
+                            <p className="text-2xl font-semibold text-black">Add Course</p>
                         </div>
                         <CourseForm displayForm={setShowForm} />
                     </div>
