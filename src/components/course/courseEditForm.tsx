@@ -60,7 +60,7 @@ export default function CourseEditForm({
             }
         };
         getData();
-    }, []);
+    }, [courseId]);
 
     const handleSubmit = async (evt: FormEvent) => {
         evt.preventDefault();

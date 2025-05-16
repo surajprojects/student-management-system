@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 
 import BtnAddBatch from "@/components/batch/btnAddBatch";
 import axiosInstance from "@/utils/axios";
-import BatchList from "@/components/batch/batchList";
+
 import { errorHandle } from "@/utils/errors/errorHandle";
+import BatchList from "@/components/batch/batchList";
 
 export default function Batch() {
     const [batchList, setBatchList] = useState([]);

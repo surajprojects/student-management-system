@@ -51,7 +51,7 @@ export default function BatchEditForm({ batchId = "", displayForm, initialData =
             }
         };
         getData();
-    }, []);
+    }, [batchId]);
 
     const handleSubmit = async (evt: FormEvent) => {
         evt.preventDefault();

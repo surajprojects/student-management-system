@@ -72,7 +72,7 @@ export default function ProfileStudent({
             }
         };
         getData();
-    }, []);
+    }, [studentId]);
     if (!studentData) {
         return (
             <>

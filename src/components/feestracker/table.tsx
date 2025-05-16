@@ -13,10 +13,10 @@ export default function Table({ studentsFeesData }: { studentsFeesData: Students
                                 S.No.
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Student's Name
+                                Student&apos;s Name
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Father's Name
+                                Father&apos;s Name
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Course
