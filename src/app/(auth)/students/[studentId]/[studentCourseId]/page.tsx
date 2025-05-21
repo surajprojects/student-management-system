@@ -68,7 +68,7 @@ export default function StudentCourse({
             }
         };
         getData();
-    }, [studentId, reloadData]);
+    }, [studentId, reloadData, studentCourseId]);
     return (
         <>
             <div>

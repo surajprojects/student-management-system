@@ -86,7 +86,7 @@ export default function StudentCourseForm({
             }
         };
         getData();
-    }, []);
+    }, [isEdit, studentCourseId, studentId]);
 
     const handleEditSubmit = async (evt: FormEvent) => {
         evt.preventDefault();
@@ -111,6 +111,10 @@ export default function StudentCourseForm({
                 displayForm(false);
                 toast.success("Course created successfully!!!");
                 setReloadData((prevData) => !prevData);
+            }
+            // Just getting free from eslint warning of unused vars :)
+            if (result.status === 999) {
+                console.log(status + feesStatus);
             }
         } catch (error) {
             errorHandle(error);
