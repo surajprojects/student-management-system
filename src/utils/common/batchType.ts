@@ -6,6 +6,8 @@ export interface BatchData {
     name: string,
     time: string,
     students: StudentData[],
+    createdAt: string,
+    updatedAt: string,
 };
 
 export type BatchesList = BatchData[];

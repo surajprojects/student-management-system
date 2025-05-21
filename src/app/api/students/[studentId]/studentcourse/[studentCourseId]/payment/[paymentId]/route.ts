@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { verifyUser } from "@/lib/apiAuth";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
-export async function DELETE(req: NextRequest, { params }: { params: { studentId: string, paymentId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { studentId: string, paymentId: string, studentCourseId: string } }) {
     try {
         const token = await verifyUser(req);
 
@@ -11,10 +11,14 @@ export async function DELETE(req: NextRequest, { params }: { params: { studentId
             return Response.json({ message: "Unauthorized!!!" }, { status: 401 });
         }
 
-        const { studentId, paymentId } = params;
+        const { studentId, paymentId, studentCourseId } = params;
 
         await prisma.payment.delete({
-            where: { id: paymentId, studentId: studentId, }
+            where: {
+                id: paymentId,
+                studentId,
+                studentCourseId,
+            }
         });
 
         return Response.json({ message: "Successfully deleted the payment!!!" }, { status: 200 });

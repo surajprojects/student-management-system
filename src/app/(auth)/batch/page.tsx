@@ -7,9 +7,12 @@ import axiosInstance from "@/utils/axios";
 
 import { errorHandle } from "@/utils/errors/errorHandle";
 import BatchList from "@/components/batch/batchList";
+import { refreshData } from "@/store/atoms/refreshData";
+import { useRecoilValue } from "recoil";
 
 export default function Batch() {
     const [batchList, setBatchList] = useState([]);
+    const reloadData = useRecoilValue(refreshData);
     useEffect(() => {
         const getData = async () => {
             try {
@@ -21,7 +24,7 @@ export default function Batch() {
             }
         };
         getData();
-    }, []);
+    }, [reloadData]);
     return (
         <>
             <div>

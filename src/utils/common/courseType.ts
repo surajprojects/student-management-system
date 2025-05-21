@@ -8,6 +8,8 @@ export interface CourseData {
     duration: string,
     fees: number,
     students: StudentData[],
+    createdAt: string,
+    updatedAt: string,
 };
 
 export type CoursesList = CourseData[];

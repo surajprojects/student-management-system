@@ -36,6 +36,20 @@ enum Institute {
   NONE
 }
 
+enum Status {
+  ACTIVE
+  COMPLETED
+  DROPPED
+  ONHOLD
+  TERMINATED
+}
+
+enum FeesStatus {
+  PAID
+  PARTIAL
+  UNPAID
+}
+
 model User {
   id         String   @id @default(cuid())
   username   String   @unique
@@ -52,6 +66,11 @@ model User {
   photo      String?
   remarks    String?
 
+  instituteName      String @unique
+  instituteAddress   String
+  contactNoPrimary   String @unique
+  contactNoSecondary String @unique
+
   batches  Batch[]
   courses  Course[]
   students Student[]
@@ -61,25 +80,55 @@ model User {
 }
 
 model Batch {
-  id       String    @id @default(cuid())
-  code     String    @unique
-  name     String
-  time     String
-  students Student[]
-  user     User      @relation(fields: [userId], references: [id])
+  id   String @id @default(cuid())
+  code String @unique
+  name String
+  time String
+
+  students StudentCourse[]
+  user     User            @relation(fields: [userId], references: [id])
   userId   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Course {
-  id            String    @id @default(cuid())
-  code          String    @unique
+  id            String @id @default(cuid())
+  code          String @unique
   name          String
   instituteName String
   duration      String
   fees          Int
-  students      Student[]
-  user          User      @relation(fields: [userId], references: [id])
-  userId        String
+
+  students StudentCourse[]
+  user     User            @relation(fields: [userId], references: [id])
+  userId   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StudentCourse {
+  id        String  @id @default(cuid())
+  batch     Batch   @relation(fields: [batchId], references: [id])
+  batchId   String
+  course    Course  @relation(fields: [courseId], references: [id])
+  courseId  String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+
+  enrolledOn DateTime
+  totalFees  Int
+  session    String
+  remarks    String?
+  status     Status     @default(ACTIVE)
+  feesStatus FeesStatus @default(UNPAID)
+
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Student {
@@ -93,22 +142,16 @@ model Student {
   category         Category
   institute        Institute
   instituteName    String?
-  mobileNo         String
-  guardianMobileNo String
-  email            String?
+  mobileNo         String    @unique
+  guardianMobileNo String    @unique
+  email            String?   @unique
   address          String
-  course           Course    @relation(fields: [courseId], references: [id])
-  courseId         String
-  batch            Batch     @relation(fields: [batchId], references: [id])
-  batchId          String
-  enrolledOn       DateTime
-  totalFees        Int
-  session          String
   photo            String?
   remarks          String?
 
-  payments  Payment[]
-  documents StudentDocument[]
+  documents      StudentDocument[]
+  studentCourses StudentCourse[]
+  payment        Payment[]
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -125,14 +168,16 @@ enum PaymentMode {
 }
 
 model Payment {
-  id        String      @id @default(cuid())
-  student   Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId String
-  amount    Int
-  method    PaymentMode
-  date      DateTime
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id              String        @id @default(cuid())
+  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId       String
+  amount          Int
+  method          PaymentMode
+  date            DateTime
+  studentCourse   StudentCourse @relation(fields: [studentCourseId], references: [id])
+  studentCourseId String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 enum DocumentType {

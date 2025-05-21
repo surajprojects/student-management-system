@@ -1,6 +1,5 @@
 import { StudentsFeesList } from "@/utils/common/studentType";
 import TableField from "../students/tableField";
-import PaymentBtn from "../students/paymentBtn";
 
 export default function Table({ studentsFeesData }: { studentsFeesData: StudentsFeesList }) {
     return (
@@ -19,12 +18,6 @@ export default function Table({ studentsFeesData }: { studentsFeesData: Students
                                 Father&apos;s Name
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Course
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Session
-                            </th>
-                            <th scope="col" className="px-6 py-3">
                                 Total Fees
                             </th>
                             <th scope="col" className="px-6 py-3">
@@ -34,7 +27,10 @@ export default function Table({ studentsFeesData }: { studentsFeesData: Students
                                 Due Fees
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Action
+                                Fees Status
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Status
                             </th>
                         </tr>
                     </thead>
@@ -50,12 +46,6 @@ export default function Table({ studentsFeesData }: { studentsFeesData: Students
                                         {student.fatherName}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {student.course}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {student.session}
-                                    </td>
-                                    <td className="px-6 py-4">
                                         Rs.{student.totalFees}/-
                                     </td>
                                     <td className="px-6 py-4">
@@ -65,12 +55,15 @@ export default function Table({ studentsFeesData }: { studentsFeesData: Students
                                         Rs.{student.totalFees - student.paidFees}/-
                                     </td>
                                     <td className="px-6 py-4">
-                                        <PaymentBtn studentId={student.id} />
+                                        {student.status[0].feesStatus}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {student.status[0].status}
                                     </td>
                                 </tr>
                             })
                             :
-                            <tr className="h-14"><td colSpan={9} className="text-center">No student found!!!</td></tr>
+                            <tr className="h-14"><td colSpan={8} className="text-center">No student found!!!</td></tr>
                         }
                     </tbody>
                 </table>

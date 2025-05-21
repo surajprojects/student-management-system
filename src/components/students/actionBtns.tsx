@@ -6,16 +6,20 @@ import axiosInstance from "@/utils/axios";
 import { errorHandle } from "@/utils/errors/errorHandle";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline"
 import { toast } from "react-toastify";
+import { refreshData } from "@/store/atoms/refreshData";
+import { useSetRecoilState } from "recoil";
 
 export default function ActionBtns({ studentId, paymentBtn = false, paymentId = "" }: { studentId: string, paymentBtn?: boolean, paymentId?: string }) {
 
     const router = useRouter();
+    const setReloadData = useSetRecoilState(refreshData);
 
     const handleDelete = async () => {
         try {
             const result = await axiosInstance.delete(`/students/${studentId}`);
             if (result.status === 200) {
                 toast.success('Student deleted successfully!');
+                setReloadData((prevData) => !prevData);
                 router.push("/students");
             }
         } catch (error) {
@@ -28,6 +32,7 @@ export default function ActionBtns({ studentId, paymentBtn = false, paymentId = 
             const result = await axiosInstance.delete(`/students/${studentId}/payment/${paymentId}`);
             if (result.status === 200) {
                 toast.success('Payment deleted successfully!');
+                setReloadData((prevData) => !prevData);
             }
         } catch (error) {
             errorHandle(error);

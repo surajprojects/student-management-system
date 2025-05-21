@@ -6,7 +6,7 @@ export default function TableField({ studentId, name }: { studentId: string, nam
     const router = useRouter();
     return (
         <>
-            <th scope="row" onClick={() => router.push(`/students/${studentId}/profile`)} className="px-6 py-4 font-medium hover:cursor-pointer text-gray-900 whitespace-nowrap dark:text-white">
+            <th scope="row" onClick={() => router.push(`/students/${studentId}/profile`)} className="px-6 py-4 font-medium hover:cursor-pointer text-gray-900 whitespace-nowrap capitalize">
                 {name}
             </th>
         </>

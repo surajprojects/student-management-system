@@ -16,14 +16,19 @@ export async function GET(req: NextRequest) {
                 userId: String(token.id)
             },
             include: {
-                course: true,
-                batch: true
+                studentCourses: {
+                    include: {
+                        batch: true,
+                        course: true
+                    },
+                },
             }
         });
 
         if (!allStudents) {
             return Response.json({ message: "Students not found!!!" }, { status: 404 });
         }
+
 
         return Response.json({ message: "Successfully found all students!!!", allStudents }, { status: 200 });
     }
@@ -45,29 +50,8 @@ export async function POST(req: NextRequest) {
         const parsedInput = studentFormInput.safeParse(data);
 
         if (!parsedInput.success) {
+            console.log(parsedInput.error.errors)
             return Response.json({ message: "Invalid input!!!", details: parsedInput.error.errors }, { status: 400 });
-        }
-
-        const courseId = await prisma.course.findUnique({
-            where: {
-                code: parsedInput.data.course,
-                userId: String(token.id),
-            }
-        });
-
-        if (!courseId) {
-            return Response.json({ message: "Invalid course selected!!!" }, { status: 404 });
-        }
-
-        const batchId = await prisma.batch.findUnique({
-            where: {
-                code: parsedInput.data.batch,
-                userId: String(token.id),
-            }
-        });
-
-        if (!batchId) {
-            return Response.json({ message: "Invalid batch selected!!!" }, { status: 404 });
         }
 
         const studentData = await prisma.student.create({
@@ -75,25 +59,20 @@ export async function POST(req: NextRequest) {
                 fullName: parsedInput.data.fullName,
                 fatherName: parsedInput.data.fatherName,
                 motherName: parsedInput.data.motherName,
-                address: parsedInput.data.address,
-                category: parsedInput.data.category,
-                class: parsedInput.data.class,
                 dob: new Date(parsedInput.data.dob).toISOString(),
-                enrolledOn: new Date(parsedInput.data.enrolledOn).toISOString(),
+                class: parsedInput.data.class,
                 gender: parsedInput.data.gender,
+                category: parsedInput.data.category,
+                institute: parsedInput.data.institute,
+                address: parsedInput.data.address,
                 mobileNo: parsedInput.data.mobileNo,
                 guardianMobileNo: parsedInput.data.guardianMobileNo,
-                batchId: batchId.id,
-                courseId: courseId.id,
-                institute: parsedInput.data.institute,
-                totalFees: Number(parsedInput.data.totalFees),
-                session: parsedInput.data.session,
                 userId: String(token.id),
                 ...(parsedInput.data.email && { email: parsedInput.data.email }),
                 ...(parsedInput.data.instituteName && { instituteName: parsedInput.data.instituteName }),
                 ...(parsedInput.data.remarks && { remarks: parsedInput.data.remarks }),
-            },
-            include: { batch: true, course: true }
+                ...(parsedInput.data.photo && { photo: parsedInput.data.photo }),
+            }
         });
 
         return Response.json({ message: "Successfully created the student!!!", studentData }, { status: 201 });

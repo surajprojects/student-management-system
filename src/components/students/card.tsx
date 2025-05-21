@@ -1,16 +1,14 @@
 "use client"
 
-import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Institute, Gender, Category } from "@/db/generated/prisma";
+import { Institute, Gender, Category, } from "@/db/generated/prisma";
 import { StudentFormInput } from "@/utils/validators/studentInput";
 import axiosInstance from "@/utils/axios";
 import { errorHandle } from "@/utils/errors/errorHandle";
 import CardField from "./cardField";
 import Spinner from "../ui/spinner";
 import { StudentData } from "@/utils/common/studentType";
-import { CourseData } from "@/utils/common/courseType";
-import { BatchData } from "@/utils/common/batchType";
+import { useRouter } from "next/navigation";
 
 export default function Card({
     handleSubmitForm,
@@ -35,37 +33,12 @@ export default function Card({
         guardianMobileNo: "",
         email: "",
         address: "",
-        course: "",
-        enrolledOn: "",
-        totalFees: "",
-        batch: "",
-        session: "",
         remarks: "",
     };
+
+    const router = useRouter();
     const [formData, setFormData] = useState(initialData);
-    const [isLoading, setIsLoading] = useState(true);
-    const [courseList, setCourseList] = useState([]);
-    const [batchList, setBatchList] = useState([]);
-
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                setIsLoading(true);
-                const courseResult = await axiosInstance.get("/course");
-                const courseData = courseResult.data.allCourses;
-                setCourseList(courseData);
-                const batchResult = await axiosInstance.get("/batch");
-                const batchData = batchResult.data.allBatches;
-                setBatchList(batchData);
-                setIsLoading(false);
-            }
-            catch (error) {
-                errorHandle(error);
-            }
-        };
-        getData();
-    }, []);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (isEdit) {
@@ -90,11 +63,6 @@ export default function Card({
                             guardianMobileNo: data.guardianMobileNo ? data.guardianMobileNo : "",
                             email: data.email ? data.email : "",
                             address: data.address ? data.address : "",
-                            course: data.course ? data.course.code : "",
-                            enrolledOn: data.enrolledOn ? data.enrolledOn.split("T")[0] : "",
-                            totalFees: data.totalFees ? String(data.totalFees) : "",
-                            batch: data.batch ? data.batch.code : "",
-                            session: data.session ? data.session : "",
                             remarks: data.remarks ? data.remarks : "",
                         }
                     });
@@ -136,12 +104,14 @@ export default function Card({
                         if (!Object.values(Category).includes(formData.category as Category)) {
                             throw new Error("Invalid category");
                         }
-                        const isSuccess = await handleSubmitForm({
-                            ...formData,
-                            institute: formData.institute as Institute,
-                            gender: formData.gender as Gender,
-                            category: formData.category as Category,
-                        }, studentId);
+                        const isSuccess = await handleSubmitForm(
+                            {
+                                ...formData,
+                                institute: formData.institute as Institute,
+                                gender: formData.gender as Gender,
+                                category: formData.category as Category,
+                            }
+                            , studentId);
                         if (isSuccess) {
                             setFormData(initialData)
                         }
@@ -292,74 +262,6 @@ export default function Card({
                         onChangeFunc={handleChange}
                         isRequired={!isEdit}
                     />
-                    {/* Course */}
-                    <div>
-                        <label htmlFor="course">Course{!isEdit && "*"}</label>
-                        <select
-                            name="course"
-                            id="course"
-                            value={formData.course}
-                            onChange={handleChange}
-                            className="mx-2 border-2 rounded-md px-1"
-                            required={!isEdit}
-                        >
-                            <option value="" disabled>Select Course</option>
-                            {courseList.map((course: CourseData, idx) => {
-                                return <option key={idx} value={course.code}>{course.name}</option>;
-                            })}
-                        </select>
-                    </div>
-                    {/* Enrolled On */}
-                    <CardField
-                        fieldType="date"
-                        id="enrolledOn"
-                        title="Enrolled On"
-                        isTextHolder={false}
-                        fieldValue={formData.enrolledOn}
-                        onChangeFunc={handleChange}
-                        isRequired={!isEdit}
-                    />
-                    {/* Total Fees */}
-                    <div>
-                        <label htmlFor="totalFees">Total Fees{!isEdit && "*"}</label>
-                        <input
-                            type="number"
-                            name="totalFees"
-                            id="totalFees"
-                            maxLength={10}
-                            value={formData.totalFees}
-                            onChange={handleChange}
-                            placeholder="Enter the total fees"
-                            className="mx-2 border-2 rounded-md px-1"
-                            required={!isEdit}
-                        />
-                    </div>
-                    {/* Batch */}
-                    <div>
-                        <label htmlFor="batch">Batch{!isEdit && "*"}</label>
-                        <select
-                            name="batch"
-                            id="batch"
-                            value={formData.batch}
-                            onChange={handleChange}
-                            className="mx-2 border-2 rounded-md px-1"
-                            required={!isEdit}
-                        >
-                            <option value="" disabled>Select Batch</option>
-                            {batchList.map((batch: BatchData, idx) => {
-                                return <option key={idx} value={batch.code}>{batch.name}</option>;
-                            })}
-                        </select>
-                    </div>
-                    {/* Session */}
-                    <CardField
-                        id="session"
-                        title="Session"
-                        textHolder="JUNE 2025"
-                        fieldValue={formData.session}
-                        onChangeFunc={handleChange}
-                        isRequired={!isEdit}
-                    />
                     {/* Remarks */}
                     <CardField
                         id="remarks"
@@ -372,9 +274,13 @@ export default function Card({
                     {/* Buttons */}
                     <div className="col-span-4 my-5">
                         <button type="submit" className="bg-green-500 text-white px-2 py-1 rounded-md shadow hover:cursor-pointer">Submit</button>
-                        <Link href="/students" className="bg-red-500 text-white px-2 py-1 rounded-md mx-2 shadow hover:cursor-pointer">Cancel</Link>
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className="bg-red-500 text-white px-2 py-1 rounded-md mx-2 shadow hover:cursor-pointer"
+                        >Cancel</button>
                     </div>
-                </form>
+                </form >
             }
         </>
     );

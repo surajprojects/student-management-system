@@ -5,6 +5,8 @@ import axiosInstance from "@/utils/axios";
 import CardField from "../students/cardField";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { errorHandle } from "@/utils/errors/errorHandle";
+import { refreshData } from "@/store/atoms/refreshData";
+import { useSetRecoilState } from "recoil";
 
 export default function BatchEditForm({ batchId = "", displayForm, initialData = {
     code: "",
@@ -19,7 +21,7 @@ export default function BatchEditForm({ batchId = "", displayForm, initialData =
         time: string,
     },
 }) {
-
+    const setReloadData = useSetRecoilState(refreshData);
     const [formData, setFormData] = useState(initialData);
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -60,6 +62,7 @@ export default function BatchEditForm({ batchId = "", displayForm, initialData =
             if (result.status === 200) {
                 displayForm(false);
                 toast.success("Batch updated successfully!!!");
+                setReloadData((prevData) => !prevData);
             }
         } catch (error) {
             errorHandle(error);

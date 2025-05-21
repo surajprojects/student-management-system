@@ -5,6 +5,8 @@ import axiosInstance from "@/utils/axios";
 import CardField from "../students/cardField";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { errorHandle } from "@/utils/errors/errorHandle";
+import { refreshData } from "@/store/atoms/refreshData";
+import { useSetRecoilState } from "recoil";
 
 export default function CourseForm({ displayForm }: { displayForm: (value: boolean) => void }) {
     const initialData = {
@@ -15,6 +17,7 @@ export default function CourseForm({ displayForm }: { displayForm: (value: boole
         fees: "",
     };
 
+    const setReloadData = useSetRecoilState(refreshData);
     const [formData, setFormData] = useState(initialData);
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -38,6 +41,7 @@ export default function CourseForm({ displayForm }: { displayForm: (value: boole
             if (result.status === 201) {
                 displayForm(false);
                 toast.success("Course created successfully!!!");
+                setReloadData((prevData) => !prevData);
             }
         } catch (error) {
             errorHandle(error);

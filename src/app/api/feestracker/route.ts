@@ -12,10 +12,16 @@ export async function GET(req: NextRequest) {
 
         const allStudents = await prisma.student.findMany({
             where: { userId: String(token.id) },
-            include: { payments: true, course: true }
+            include: {
+                studentCourses: {
+                    include: {
+                        batch: true,
+                        course: true,
+                        payments: true,
+                    }
+                }
+            },
         });
-
-        console.log(allStudents)
 
         if (!allStudents) {
             return Response.json({ message: "Student not found!!!" }, { status: 404 });
@@ -26,10 +32,13 @@ export async function GET(req: NextRequest) {
                 id: student.id,
                 fullName: student.fullName,
                 fatherName: student.fatherName,
-                course: student.course.name,
-                session: student.session,
-                totalFees: student.totalFees,
-                paidFees: student.payments.reduce((sum, payment) => sum + payment.amount, 0),
+                totalFees: student.studentCourses.reduce((sum, fees) => sum + fees.totalFees, 0),
+                paidFees: student.studentCourses.reduce((sum, payment) => sum + payment.payments.reduce((sum, fees) => sum + fees.amount, 0), 0),
+                status: student.studentCourses.map((status) => {
+                    if (status.feesStatus !== "PAID") {
+                        return { feesStatus: status.feesStatus, status: status.status };
+                    }
+                }),
             }
         });
 

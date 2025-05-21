@@ -1,6 +1,5 @@
-import { BatchData } from "./batchType";
-import { CourseData } from "./courseType";
 import { PaymentsList } from "./paymentType";
+import { StudentCourseList } from "./studentCourseType";
 
 export interface StudentData {
     id: string,
@@ -9,26 +8,20 @@ export interface StudentData {
     fatherName: string,
     motherName: string,
     dob: string,
+    class: string,
     gender: string,
     category: string,
-    class: string,
     institute: string,
     instituteName?: string,
     mobileNo: string,
     guardianMobileNo: string,
     email: string,
     address: string,
-    courseId: string,
-    batchId: string,
-    enrolledOn: string,
-    totalFees: number,
-    session: string,
     photo?: string,
     remarks?: string,
     createdAt: string,
     updatedAt: string,
-    batch: BatchData,
-    course: CourseData,
+    studentCourses: StudentCourseList,
     payments: PaymentsList,
 };
 
@@ -38,10 +31,12 @@ export interface StudentFeesData {
     id: string,
     fullName: string,
     fatherName: string,
-    course: string,
-    session: string,
     totalFees: number,
     paidFees: number,
+    status: {
+        status: string,
+        feesStatus: string,
+    }[],
 };
 
 export type StudentsFeesList = StudentFeesData[];

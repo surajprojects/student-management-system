@@ -20,6 +20,10 @@ export default function Register() {
         email: "",
         mobileNo: "",
         address: "",
+        instituteName: "",
+        instituteAddress: "",
+        contactNoPrimary: "",
+        contactNoSecondary: "",
         username: "",
         password: "",
         remarks: "",
@@ -60,7 +64,7 @@ export default function Register() {
 
     return (
         <>
-            <div className="border shadow-md p-8 rounded-lg h-2/3">
+            <div className="border shadow-md p-8 rounded-lg h-4/5">
                 <h3 className="text-3xl font-medium text-center mb-5">Register</h3>
                 <form
                     onSubmit={handleSubmit}
@@ -154,6 +158,38 @@ export default function Register() {
                         title="Address"
                         textHolder="Enter the address"
                         fieldValue={formData.address}
+                        onChangeFunc={handleChange}
+                    />
+                    {/* Institute Name */}
+                    <CardField
+                        id="instituteName"
+                        title="Institute Name"
+                        textHolder="Enter the institute name"
+                        fieldValue={formData.instituteName}
+                        onChangeFunc={handleChange}
+                    />
+                    {/* Institute Address */}
+                    <CardField
+                        id="instituteAddress"
+                        title="Institute Address"
+                        textHolder="Enter the institute address"
+                        fieldValue={formData.instituteAddress}
+                        onChangeFunc={handleChange}
+                    />
+                    {/* Contact Number Primary */}
+                    <CardField
+                        id="contactNoPrimary"
+                        title="Contact No. Primary"
+                        textHolder="00000 00000"
+                        fieldValue={formData.contactNoPrimary}
+                        onChangeFunc={handleChange}
+                    />
+                    {/* Contact Number Secondary */}
+                    <CardField
+                        id="contactNoSecondary"
+                        title="Contact No. Secondary"
+                        textHolder="00000 00000"
+                        fieldValue={formData.contactNoSecondary}
                         onChangeFunc={handleChange}
                     />
                     {/* Username */}

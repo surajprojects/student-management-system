@@ -1,8 +1,8 @@
 import { PaymentsList } from "@/utils/common/paymentType";
-import ActionBtns from "./actionBtns";
 import { formatDate } from "@/utils/dateAndTime";
+import ActionBtnPymt from "./delPymtBtn";
 
-export default function PaymentDetails({ paymentData, studentId }: { paymentData: PaymentsList, studentId: string }) {
+export default function PaymentDetails({ paymentData, studentId, studentCourseId }: { paymentData: PaymentsList, studentId: string, studentCourseId: string }) {
     return (
         <>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -43,7 +43,11 @@ export default function PaymentDetails({ paymentData, studentId }: { paymentData
                                         Rs.{payment.amount}/-
                                     </td>
                                     <td className="px-6 py-4">
-                                        <ActionBtns paymentBtn={true} studentId={studentId} paymentId={payment.id} />
+                                        <ActionBtnPymt
+                                            studentId={studentId}
+                                            studentCourseId={studentCourseId}
+                                            paymentId={payment.id}
+                                        />
                                     </td>
                                 </tr>
                             })

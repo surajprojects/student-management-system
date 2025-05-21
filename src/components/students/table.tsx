@@ -53,7 +53,7 @@ export default function Table({ studentsData }: { studentsData: StudentsList }) 
                                         {idx + 1}
                                     </td>
                                     <TableField studentId={student.id} name={student.fullName} />
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 capitalize">
                                         {student.fatherName}
                                     </td>
                                     <td className="px-6 py-4">
@@ -66,16 +66,16 @@ export default function Table({ studentsData }: { studentsData: StudentsList }) 
                                         {student.mobileNo}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {student.course.code}
+                                        {student.studentCourses.length > 0 ? student.studentCourses[0].course.code : "N/A"}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {student.batch.code}
+                                        {student.studentCourses.length > 0 ? student.studentCourses[0].batch.code : "N/A"}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {student.session}
+                                        {student.studentCourses.length > 0 ? student.studentCourses[0].session : "N/A"}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {formatDate(student.enrolledOn.split("T")[0])}
+                                        {student.studentCourses.length > 0 ? formatDate(student.studentCourses[0].enrolledOn.split("T")[0]) : "N/A"}
                                     </td>
                                     <td className="px-6 py-4">
                                         <ActionBtns studentId={student.id} />

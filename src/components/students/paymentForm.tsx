@@ -5,13 +5,26 @@ import CardField from "./cardField";
 import axiosInstance from "@/utils/axios";
 import { errorHandle } from "@/utils/errors/errorHandle";
 import { toast } from "react-toastify";
+import { useSetRecoilState } from "recoil";
+import { refreshData } from "@/store/atoms/refreshData";
 
-export default function PaymentForm({ studentId = "", displayForm }: { studentId: string, displayForm: (value: boolean) => void }) {
+export default function PaymentForm({
+    studentId = "",
+    studentCourseId = "",
+    displayForm
+}:
+    {
+        studentId: string,
+        studentCourseId: string,
+        displayForm: (value: boolean) => void
+    }) {
     const [formData, setFormData] = useState({
         method: "",
         amount: "",
         date: "",
     });
+
+    const setReloadData = useSetRecoilState(refreshData);
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const fieldName = evt.target.name;
@@ -27,7 +40,7 @@ export default function PaymentForm({ studentId = "", displayForm }: { studentId
     const handleSubmit = async (evt: FormEvent) => {
         evt.preventDefault();
         try {
-            const result = await axiosInstance.post(`/students/${studentId}/payment`, {
+            const result = await axiosInstance.post(`/students/${studentId}/studentcourse/${studentCourseId}/payment`, {
                 method: formData.method,
                 amount: Number(formData.amount),
                 date: formData.date,
@@ -35,6 +48,7 @@ export default function PaymentForm({ studentId = "", displayForm }: { studentId
             if (result.status === 200) {
                 displayForm(false);
                 toast.success('Payment saved successfully!');
+                setReloadData((prevData) => !prevData);
             }
         } catch (error) {
             errorHandle(error);
@@ -85,7 +99,7 @@ export default function PaymentForm({ studentId = "", displayForm }: { studentId
                     onChangeFunc={handleChange}
                 />
                 {/* Button */}
-                <button type="submit" className="w-full mt-4 bg-green-500 text-white px-2 py-1 rounded-md shadow hover:cursor-pointer">Submit Payment</button>
+                <button type="submit" className="w-full mt-4 bg-green-500 text-white px-2 py-1 rounded-md shadow hover:cursor-pointer">Add Payment</button>
             </form>
         </>
     );

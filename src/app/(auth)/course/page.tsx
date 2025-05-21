@@ -5,8 +5,11 @@ import BtnAddCourse from "@/components/course/btnAddCourse";
 import axiosInstance from "@/utils/axios";
 import { useEffect, useState } from "react";
 import { errorHandle } from "@/utils/errors/errorHandle";
+import { refreshData } from "@/store/atoms/refreshData";
+import { useRecoilValue } from "recoil";
 
 export default function Course() {
+    const reloadData = useRecoilValue(refreshData);
     const [courseList, setCourseList] = useState([]);
     useEffect(() => {
         const getData = async () => {
@@ -19,7 +22,7 @@ export default function Course() {
             }
         };
         getData();
-    }, []);
+    }, [reloadData]);
     return (
         <>
             <div>

@@ -1,11 +1,14 @@
 "use client"
 
 import Table from "@/components/students/table";
+import { refreshData } from "@/store/atoms/refreshData";
 import axiosInstance from "@/utils/axios";
 import { UserPlusIcon } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 
 export default function Students() {
+    const reloadData = useRecoilValue(refreshData);
     const [studentsList, setStudentsList] = useState([]);
     useEffect(() => {
         const getData = async () => {
@@ -18,7 +21,7 @@ export default function Students() {
             }
         };
         getData();
-    }, []);
+    }, [reloadData]);
     return (
         <>
             <div>

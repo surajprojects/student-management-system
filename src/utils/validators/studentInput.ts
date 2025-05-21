@@ -13,14 +13,10 @@ export const studentFormInput = z.object({
     category: z.enum([...Object.values(Category)] as [Category, ...Category[]]),
     mobileNo: z.string().regex(/^\d{10}$/, "Mobile No. must be 10 digits number string. Example - '1234567890'"),
     guardianMobileNo: z.string().regex(/^\d{10}$/, "Guardian mobile No. must be 10 digits number string. Example - '1234567890'"),
-    email: z.string().email().optional(),
     address: z.string(),
-    course: z.string(),
-    enrolledOn: z.string().date(),
-    totalFees: z.string().regex(/^\d+$/, "Total fees must be a number string. Example - '500'"),
-    batch: z.string(),
-    session: z.string(),
+    email: z.string().email().optional(),
     remarks: z.string().optional(),
+    photo: z.string().optional(),
 }).strict();
 
 export type StudentFormInput = z.infer<typeof studentFormInput>;
@@ -39,12 +35,8 @@ export const studentFormInputEdit = z.object({
     guardianMobileNo: z.string().regex(/^\d{10}$/, "Guardian mobile No. must be 10 digits number string. Example - '1234567890'").optional(),
     email: z.string().email().optional(),
     address: z.string().optional(),
-    course: z.string().optional(),
-    enrolledOn: z.string().date().optional(),
-    totalFees: z.string().regex(/^\d+$/, "Total fees must be a number string. Example - '500'").optional(),
-    batch: z.string().optional(),
-    session: z.string().optional(),
     remarks: z.string().optional(),
+    photo: z.string().optional(),
 }).strict();
 
 export type StudentFormInputEdit = z.infer<typeof studentFormInputEdit>;

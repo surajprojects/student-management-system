@@ -7,16 +7,20 @@ import { useRouter } from "next/navigation";
 import BatchEditForm from "./batchEditForm";
 import { errorHandle } from "@/utils/errors/errorHandle";
 import { TrashIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { refreshData } from "@/store/atoms/refreshData";
+import { useSetRecoilState } from "recoil";
 
 export default function BatchActionBtns({ batchId }: { batchId: string }) {
     const router = useRouter();
     const [showForm, setShowForm] = useState(false);
+    const setReloadData = useSetRecoilState(refreshData);
 
     const handleDelete = async () => {
         try {
             const result = await axiosInstance.delete(`/batch/${batchId}`);
             if (result.status === 200) {
                 toast.success('Batch deleted successfully!!!');
+                setReloadData((prevData) => !prevData);
                 router.push("/batch");
             }
         } catch (error) {

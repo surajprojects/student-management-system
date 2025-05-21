@@ -1,13 +1,15 @@
 "use client"
 
-import ActionBtns from "@/components/students/actionBtns";
-import PaymentBtn from "@/components/students/paymentBtn";
-import PaymentDetails from "@/components/students/paymentDetails";
-import StudentDetails from "@/components/students/studentDetails";
+import { useRecoilValue } from "recoil";
 import axiosInstance from "@/utils/axios";
-import { StudentData } from "@/utils/common/studentType";
-import { errorHandle } from "@/utils/errors/errorHandle";
 import { useEffect, useState } from "react";
+import { refreshData } from "@/store/atoms/refreshData";
+import { errorHandle } from "@/utils/errors/errorHandle";
+import { StudentData } from "@/utils/common/studentType";
+import ActionBtns from "@/components/students/actionBtns";
+import StudentDetails from "@/components/students/studentDetails";
+import CourseDetails from "@/components/studentCourse/courseDetails";
+import AddCourseBtn from "@/components/studentCourse/addCourseBtn";
 
 export default function ProfileStudent({
     params
@@ -21,44 +23,27 @@ export default function ProfileStudent({
         fatherName: "",
         motherName: "",
         dob: "",
+        class: "",
         gender: "",
         category: "",
-        class: "",
         institute: "",
         instituteName: "",
         mobileNo: "",
         guardianMobileNo: "",
         email: "",
         address: "",
-        courseId: "",
-        batchId: "",
-        enrolledOn: "",
-        totalFees: 0,
-        session: "",
         photo: "",
         remarks: "",
         createdAt: "",
         updatedAt: "",
-        batch: {
-            id: "",
-            code: "",
-            name: "",
-            time: "",
-            students: [],
-        },
-        course: {
-            id: "",
-            code: "",
-            name: "",
-            instituteName: "",
-            duration: "",
-            fees: 0,
-            students: [],
-        },
+        studentCourses: [],
         payments: [],
-    }
+    };
+
     const { studentId } = params;
     const [studentData, setStudentData] = useState<StudentData>(initialData);
+    const reloadData = useRecoilValue(refreshData);
+
     useEffect(() => {
         const getData = async () => {
             try {
@@ -72,7 +57,7 @@ export default function ProfileStudent({
             }
         };
         getData();
-    }, [studentId]);
+    }, [studentId, reloadData]);
     if (!studentData) {
         return (
             <>
@@ -91,9 +76,8 @@ export default function ProfileStudent({
             <>
                 <div>
                     <div className="border-b-2 pb-2 mb-5 flex justify-between">
-                        <p className="text-3xl font-medium">{studentData.fullName}</p>
+                        <p className="text-3xl font-medium capitalize">{studentData.fullName === "" ? "N/A" : studentData.fullName}</p>
                         <div className="flex">
-                            <PaymentBtn studentId={studentId} />
                             <ActionBtns studentId={studentId} />
                         </div>
                     </div>
@@ -102,9 +86,10 @@ export default function ProfileStudent({
                     </div>
                     <div className="my-8">
                         <div className="border-b-2 pb-2 mb-5 flex justify-between">
-                            <p className="text-3xl font-medium">Payments</p>
+                            <p className="text-3xl font-medium">Courses</p>
+                            <AddCourseBtn studentId={studentId} />
                         </div>
-                        <PaymentDetails paymentData={studentData.payments} studentId={studentId} />
+                        <CourseDetails studentCourse={studentData.studentCourses} studentId={studentData.id} />
                     </div>
                     <div>
                         <div className="border-b-2 pb-2 mb-5 flex justify-between">

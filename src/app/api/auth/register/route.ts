@@ -26,6 +26,10 @@ export async function POST(req: Request) {
                 address: parsedInput.data.address,
                 gender: parsedInput.data.gender,
                 category: parsedInput.data.category,
+                instituteName: parsedInput.data.instituteName,
+                instituteAddress: parsedInput.data.instituteAddress,
+                contactNoPrimary: parsedInput.data.contactNoPrimary,
+                contactNoSecondary: parsedInput.data.contactNoSecondary,
                 ...(parsedInput.data.remarks && { remarks: parsedInput.data.remarks }),
             }
         });

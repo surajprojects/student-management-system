@@ -56,13 +56,17 @@ export default function Dashboard() {
                     {/* Total Fees Due Container */}
                     <TotalCard title="Total Fees Due" num={`₹${data.totalFeesDue}/-`} colorName="f9a8d4" />
                 </div>
-                <div className='w-11/12 flex'>
+                <div className='w-11/12 h-[32rem] flex justify-center items-center'>
                     {/* Fees Chart */}
-                    <div className='w-full h-[32rem]'>
-                        <Chart firstName='Total Fees Paid' firstValue={data.totalFeesPaid} firstColor='0077b6' secondName='Total Fees Due' secondValue={data.totalFeesDue} secondColor='fca311' />
-                    </div>
+                    {data.totalFeesPaid || data.totalFeesDue ?
+                        < div className='w-full h-[32rem]'>
+                            <Chart firstName='Total Fees Paid' firstValue={data.totalFeesPaid} firstColor='0077b6' secondName='Total Fees Due' secondValue={data.totalFeesDue} secondColor='fca311' />
+                        </div>
+                        :
+                        <p>Not enough data to display chart!</p>
+                    }
                 </div>
-            </div>
+            </div >
         </>
     );
 };

@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import Table from "@/components/feestracker/table";
 import axiosInstance from "@/utils/axios";
 import { errorHandle } from "@/utils/errors/errorHandle";
+import { useRecoilValue } from "recoil";
+import { refreshData } from "@/store/atoms/refreshData";
 
 export default function FeesTracker() {
     const [feesData, setFeesData] = useState([]);
-
+    const reloadData = useRecoilValue(refreshData);
     useEffect(() => {
         const getData = async () => {
             try {
@@ -19,7 +21,7 @@ export default function FeesTracker() {
             }
         };
         getData();
-    }, []);
+    }, [reloadData]);
 
     return (
         <>
