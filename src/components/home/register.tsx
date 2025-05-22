@@ -64,11 +64,11 @@ export default function Register() {
 
     return (
         <>
-            <div className="border shadow-md p-8 rounded-lg h-4/5">
+            <div className="border shadow-md p-8 rounded-lg">
                 <h3 className="text-3xl font-medium text-center mb-5">Register</h3>
                 <form
                     onSubmit={handleSubmit}
-                    className="h-full flex flex-col justify-around pb-6"
+                    className="h-full flex flex-col justify-around pb-4"
                 >
                     {/* Name */}
                     <CardField
@@ -225,7 +225,7 @@ export default function Register() {
                         isRequired={false}
                     />
                     {/* Buttons */}
-                    <div className="col-span-4 my-5">
+                    <div className="col-span-4 mt-5">
                         <button type="submit" className="bg-green-500 w-full rounded-md shadow text-white py-1 hover:cursor-pointer hover:bg-green-600">Register</button>
                     </div>
                 </form>

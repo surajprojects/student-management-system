@@ -209,3 +209,23 @@ model StudentDocument {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum ContactStatus {
+  NEW // Just created
+  IN_PROGRESS // Being handled
+  RESPONDED // Replied by your team
+  CLOSED // Issue resolved / Contact closed
+  PENDING // Waiting for some action
+  SPAM // Marked as spam
+}
+
+model Contact {
+  id      String        @id @default(cuid())
+  name    String
+  email   String
+  message String
+  status  ContactStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
