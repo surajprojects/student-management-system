@@ -7,11 +7,11 @@ interface contactFormType {
     message: string,
 }
 
-export const contactInput = z.object({
+const contactInput = z.object({
     name: z.string(),
     email: z.string(),
     message: z.string(),
-});
+}).strict();
 
 export async function POST(req: Request) {
     try {
