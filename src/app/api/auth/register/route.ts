@@ -1,5 +1,5 @@
 import prisma from "@/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { userFormInput, UserFormInput } from "@/utils/validators/userInput";
 
 export async function POST(req: Request) {

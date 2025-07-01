@@ -1,6 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
