@@ -8,6 +8,12 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "prisma": {
+    "binaryTargets": [
+      "native",
+      "rhel-openssl-1.0.x"
+    ]
+  },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "6.6.0",
