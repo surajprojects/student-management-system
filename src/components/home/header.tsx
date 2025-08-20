@@ -19,7 +19,7 @@ export default function Header() {
                             <Link href="/feestracker">Fees Tracker</Link>
                         </li>
                         <li>
-                            <Link href="/contact">Contact</Link>
+                            <a href="https://www.tigerxinsights.com/contact">Contact</a>
                         </li>
                     </ul>
                 </nav>
