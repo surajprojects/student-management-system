@@ -7,9 +7,11 @@ import { refreshData } from "@/store/atoms/refreshData";
 import { errorHandle } from "@/utils/errors/errorHandle";
 import { StudentData } from "@/utils/common/studentType";
 import ActionBtns from "@/components/students/actionBtns";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import StudentDetails from "@/components/students/studentDetails";
-import CourseDetails from "@/components/studentCourse/courseDetails";
 import AddCourseBtn from "@/components/studentCourse/addCourseBtn";
+import CourseDetails from "@/components/studentCourse/courseDetails";
+import DocumentsTable from "@/components/studentDocument/documentsTable";
 
 export default function ProfileStudent({
     params
@@ -38,6 +40,7 @@ export default function ProfileStudent({
         updatedAt: "",
         studentCourses: [],
         payments: [],
+        documents: [],
     };
 
     const { studentId } = params;
@@ -94,10 +97,11 @@ export default function ProfileStudent({
                     <div>
                         <div className="border-b-2 pb-2 mb-5 flex justify-between">
                             <p className="text-3xl font-medium">Documents</p>
+                            <a href={`/students/${studentId}/studentdocument/new`} className="hover:cursor-pointer rounded-full flex items-center hover:shadow">
+                                <PlusCircleIcon className="w-9 h-6 text-black" />
+                            </a>
                         </div>
-                        <div>
-                            <p>No documents found!!!</p>
-                        </div>
+                        <DocumentsTable studentDocumentList={studentData.documents} />
                     </div>
                 </div>
             </>

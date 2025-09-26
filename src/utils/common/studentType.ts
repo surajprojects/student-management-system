@@ -1,5 +1,6 @@
 import { PaymentsList } from "./paymentType";
 import { StudentCourseList } from "./studentCourseType";
+import { StudentDocumentList } from "./studentDocumentType";
 
 export interface StudentData {
     id: string,
@@ -23,6 +24,7 @@ export interface StudentData {
     updatedAt: string,
     studentCourses: StudentCourseList,
     payments: PaymentsList,
+    documents: StudentDocumentList,
 };
 
 export type StudentsList = StudentData[];
