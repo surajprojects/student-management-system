@@ -25,7 +25,7 @@ export default function AddDocumentBtn({ studentId = "" }: { studentId: string }
                         <div className="border-b-2 pb-2 mb-5">
                             <p className="text-2xl font-semibold text-black">Add Document</p>
                         </div>
-                        <StudentDocumentForm studentId={studentId} displayForm={setShowForm} />
+                        <StudentDocumentForm studentId={studentId} />
                     </div>
                 </div>
             )}
